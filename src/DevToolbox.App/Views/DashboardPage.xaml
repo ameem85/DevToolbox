@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="DevToolbox.App.Views.DashboardPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:strings="clr-namespace:DevToolbox.App.Resources.Strings"
+    xmlns:vm="clr-namespace:DevToolbox.App.ViewModels"
+    Title="{x:Static strings:AppStrings.Nav_Dashboard}"
+    x:DataType="vm:DashboardViewModel"
+    AutomationId="Dashboard_Page"
+    BackgroundColor="#0F172A">
+
+    <ScrollView AutomationId="Dashboard_MainScrollView">
+        <VerticalStackLayout
+            Padding="20, 16"
+            Spacing="16">
+
+            <Border
+                Padding="18, 16"
+                BackgroundColor="#1E293B"
+                Stroke="#334155"
+                StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        AutomationId="Dashboard_HeaderTitleLabel"
+                        FontAttributes="Bold"
+                        FontSize="22"
+                        Text="{x:Static strings:AppStrings.Dashboard_HeaderTitle}"
+                        TextColor="#F8FAFC" />
+                    <Label
+                        AutomationId="Dashboard_HeaderSubtitleLabel"
+                        FontSize="13"
+                        Text="{x:Static strings:AppStrings.Dashboard_HeaderSubtitle}"
+                        TextColor="#94A3B8" />
+
+                    <Grid
+                        Margin="0, 8, 0, 0"
+                        ColumnDefinitions="*, *, *"
+                        ColumnSpacing="10">
+                        <Border
+                            Grid.Column="0"
+                            Padding="12, 10"
+                            BackgroundColor="#0F172A"
+                            Stroke="#38BDF8"
+                            StrokeShape="RoundRectangle 8">
+                            <Label
+                                AutomationId="Dashboard_OverlaySummaryLabel"
+                                FontSize="12"
+                                Text="{Binding OverlaySummary}"
+                                TextColor="#38BDF8" />
+                        </Border>
+                        <Border
+                            Grid.Column="1"
+                            Padding="12, 10"
+                            BackgroundColor="#0F172A"
+                            Stroke="#34D399"
+                            StrokeShape="RoundRectangle 8">
+                            <Label
+                                AutomationId="Dashboard_ProxySummaryLabel"
+                                FontSize="12"
+                                Text="{Binding ProxySummary}"
+                                TextColor="#34D399" />
+                        </Border>
+                        <Border
+                            Grid.Column="2"
+                            Padding="12, 10"
+                            BackgroundColor="#0F172A"
+                            Stroke="#FBBF24"
+                            StrokeShape="RoundRectangle 8">
+                            <Label
+                                AutomationId="Dashboard_OrientationSummaryLabel"
+                                FontSize="12"
+                                Text="{Binding OrientationSummary}"
+                                TextColor="#FBBF24" />
+                        </Border>
+                    </Grid>
+
+                    <HorizontalStackLayout
+                        Margin="0, 8, 0, 0"
+                        Spacing="10">
+                        <Button
+                            AutomationId="Dashboard_QuickToggleOverlayButton"
+                            BackgroundColor="#0284C7"
+                            Command="{Binding QuickToggleOverlayCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Dashboard_QuickLaunchOverlay}"
+                            TextColor="White" />
+                        <Button
+                            AutomationId="Dashboard_QuickToggleProxyButton"
+                            BackgroundColor="#059669"
+                            Command="{Binding QuickToggleProxyCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Dashboard_QuickToggleProxy}"
+                            TextColor="White" />
+                        <Button
+                            AutomationId="Dashboard_QuickCycleOrientationButton"
+                            BackgroundColor="#D97706"
+                            Command="{Binding QuickCycleOrientationCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Dashboard_QuickCycleOrientation}"
+                            TextColor="White" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <Label
+                AutomationId="Dashboard_ModulesSectionHeaderLabel"
+                FontAttributes="Bold"
+                FontSize="17"
+                Text="{x:Static strings:AppStrings.Dashboard_RegisteredModulesHeader}"
+                TextColor="#E2E8F0" />
+
+            <CollectionView
+                AutomationId="Dashboard_ModulesCollectionView"
+                ItemsSource="{Binding Modules}"
+                SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout
+                        ItemSpacing="12"
+                        Orientation="Vertical" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ToolModuleCardItem">
+                        <Border
+                            Padding="16, 14"
+                            BackgroundColor="#1E293B"
+                            Stroke="#334155"
+                            StrokeShape="RoundRectangle 10">
+                            <Grid
+                                ColumnDefinitions="Auto, *, Auto"
+                                ColumnSpacing="14">
+                                <Label
+                                    Grid.Column="0"
+                                    AutomationId="Dashboard_ModuleCardIconLabel"
+                                    FontSize="28"
+                                    Text="{Binding IconGlyph}"
+                                    VerticalOptions="Center" />
+
+                                <VerticalStackLayout
+                                    Grid.Column="1"
+                                    Spacing="4">
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label
+                                            AutomationId="Dashboard_ModuleCardTitleLabel"
+                                            FontAttributes="Bold"
+                                            FontSize="16"
+                                            Text="{Binding Title}"
+                                            TextColor="#F8FAFC" />
+                                        <Label
+                                            AutomationId="Dashboard_ModuleCardStatusBadgeLabel"
+                                            FontAttributes="Bold"
+                                            FontSize="11"
+                                            Text="{Binding StatusText}"
+                                            TextColor="#38BDF8"
+                                            VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                    <Label
+                                        AutomationId="Dashboard_ModuleCardDescriptionLabel"
+                                        FontSize="13"
+                                        Text="{Binding Description}"
+                                        TextColor="#94A3B8" />
+                                    <Label
+                                        AutomationId="Dashboard_ModuleCardCategoryLabel"
+                                        FontSize="11"
+                                        Text="{Binding CategoryBadge}"
+                                        TextColor="#64748B" />
+                                </VerticalStackLayout>
+
+                                <HorizontalStackLayout
+                                    Grid.Column="2"
+                                    Spacing="8"
+                                    VerticalOptions="Center">
+                                    <Button
+                                        AutomationId="Dashboard_ModuleCardToggleButton"
+                                        BackgroundColor="#334155"
+                                        Command="{Binding ToggleCommand}"
+                                        CornerRadius="8"
+                                        Text="{x:Static strings:AppStrings.Dashboard_ToggleModuleButton}"
+                                        TextColor="#E2E8F0" />
+                                    <Button
+                                        AutomationId="Dashboard_ModuleCardOpenButton"
+                                        BackgroundColor="#2563EB"
+                                        Command="{Binding OpenCommand}"
+                                        CornerRadius="8"
+                                        Text="{x:Static strings:AppStrings.Dashboard_OpenModuleButton}"
+                                        TextColor="White" />
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

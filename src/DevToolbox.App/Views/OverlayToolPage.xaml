@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="DevToolbox.App.Views.OverlayToolPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:strings="clr-namespace:DevToolbox.App.Resources.Strings"
+    xmlns:vm="clr-namespace:DevToolbox.App.ViewModels"
+    Title="{x:Static strings:AppStrings.Overlay_PageTitle}"
+    x:DataType="vm:OverlayToolViewModel"
+    AutomationId="OverlayTool_Page"
+    BackgroundColor="#0F172A">
+
+    <ScrollView AutomationId="OverlayTool_ScrollView">
+        <VerticalStackLayout
+            Padding="20, 16"
+            Spacing="16">
+
+            <Border
+                Padding="16, 14"
+                BackgroundColor="#1E293B"
+                Stroke="#334155"
+                StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="10">
+                    <Label
+                        AutomationId="OverlayTool_SectionPermissionsLabel"
+                        FontAttributes="Bold"
+                        FontSize="17"
+                        Text="{x:Static strings:AppStrings.Overlay_SectionPermissions}"
+                        TextColor="#F8FAFC" />
+
+                    <HorizontalStackLayout Spacing="12">
+                        <Label
+                            AutomationId="OverlayTool_PermissionBadgeLabel"
+                            FontAttributes="Bold"
+                            FontSize="13"
+                            Text="{Binding PermissionBadge}"
+                            TextColor="#38BDF8" />
+                        <Label
+                            AutomationId="OverlayTool_ImplementationBadgeLabel"
+                            FontSize="13"
+                            Text="{Binding ImplementationBadge}"
+                            TextColor="#34D399" />
+                    </HorizontalStackLayout>
+
+                    <Label
+                        AutomationId="OverlayTool_StatusDetailsLabel"
+                        FontSize="12"
+                        Text="{Binding StatusDetails}"
+                        TextColor="#94A3B8" />
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Button
+                            AutomationId="OverlayTool_CheckPermissionButton"
+                            BackgroundColor="#334155"
+                            Command="{Binding CheckPermissionCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Overlay_CheckPermissionButton}"
+                            TextColor="White" />
+                        <Button
+                            AutomationId="OverlayTool_RequestPermissionButton"
+                            BackgroundColor="#0284C7"
+                            Command="{Binding RequestPermissionCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Overlay_RequestPermissionButton}"
+                            TextColor="White" />
+                        <Button
+                            AutomationId="OverlayTool_GrantAdbButton"
+                            BackgroundColor="#4F46E5"
+                            Command="{Binding GrantViaAdbAppOpsCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Overlay_GrantViaAdbButton}"
+                            TextColor="White" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border
+                Padding="16, 14"
+                BackgroundColor="#1E293B"
+                Stroke="#334155"
+                StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="12">
+                    <Label
+                        AutomationId="OverlayTool_SectionControlsLabel"
+                        FontAttributes="Bold"
+                        FontSize="17"
+                        Text="{x:Static strings:AppStrings.Overlay_SectionControls}"
+                        TextColor="#F8FAFC" />
+
+                    <HorizontalStackLayout Spacing="12">
+                        <Switch
+                            AutomationId="OverlayTool_PinTopMostSwitch"
+                            IsToggled="{Binding IsPinnedTopMost}"
+                            OnColor="#38BDF8" />
+                        <Label
+                            AutomationId="OverlayTool_PinTopMostLabel"
+                            FontSize="13"
+                            Text="{x:Static strings:AppStrings.Overlay_PinTopMostLabel}"
+                            TextColor="#E2E8F0"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <VerticalStackLayout Spacing="4">
+                        <Label
+                            AutomationId="OverlayTool_OpacityLabel"
+                            FontSize="13"
+                            Text="{x:Static strings:AppStrings.Overlay_OpacityLabel}"
+                            TextColor="#E2E8F0" />
+                        <Slider
+                            AutomationId="OverlayTool_OpacitySlider"
+                            Maximum="1.0"
+                            Minimum="0.4"
+                            MinimumTrackColor="#38BDF8"
+                            Value="{Binding OverlayOpacity}" />
+                    </VerticalStackLayout>
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Button
+                            AutomationId="OverlayTool_ShowOverlayButton"
+                            BackgroundColor="#059669"
+                            Command="{Binding ShowOverlayCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Overlay_ShowButton}"
+                            TextColor="White" />
+                        <Button
+                            AutomationId="OverlayTool_HideOverlayButton"
+                            BackgroundColor="#DC2626"
+                            Command="{Binding HideOverlayCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Overlay_HideButton}"
+                            TextColor="White" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <Label
+                AutomationId="OverlayTool_QuickActionsHeaderLabel"
+                FontAttributes="Bold"
+                FontSize="16"
+                Text="{x:Static strings:AppStrings.Overlay_QuickActionsHeader}"
+                TextColor="#E2E8F0" />
+
+            <CollectionView
+                AutomationId="OverlayTool_QuickActionsCollectionView"
+                ItemsSource="{Binding QuickActions}"
+                SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout
+                        ItemSpacing="8"
+                        Orientation="Vertical" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:QuickActionItemViewModel">
+                        <Border
+                            Padding="14, 10"
+                            BackgroundColor="#1E293B"
+                            Stroke="#334155"
+                            StrokeShape="RoundRectangle 8">
+                            <Grid
+                                ColumnDefinitions="Auto, *, Auto"
+                                ColumnSpacing="12">
+                                <Label
+                                    Grid.Column="0"
+                                    AutomationId="OverlayTool_QuickActionIconLabel"
+                                    FontSize="20"
+                                    Text="{Binding IconGlyph}"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    AutomationId="OverlayTool_QuickActionLabel"
+                                    FontSize="14"
+                                    Text="{Binding Label}"
+                                    TextColor="#F8FAFC"
+                                    VerticalOptions="Center" />
+                                <Button
+                                    Grid.Column="2"
+                                    AutomationId="OverlayTool_QuickActionInvokeButton"
+                                    BackgroundColor="#2563EB"
+                                    Command="{Binding InvokeCommand}"
+                                    CornerRadius="8"
+                                    Text="{x:Static strings:AppStrings.Overlay_RunQuickActionButton}"
+                                    TextColor="White" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

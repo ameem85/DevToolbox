@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="DevToolbox.App.Views.OrientationToolPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:strings="clr-namespace:DevToolbox.App.Resources.Strings"
+    xmlns:vm="clr-namespace:DevToolbox.App.ViewModels"
+    Title="{x:Static strings:AppStrings.Orientation_PageTitle}"
+    x:DataType="vm:OrientationToolViewModel"
+    AutomationId="OrientationTool_Page"
+    BackgroundColor="#0F172A">
+
+    <ScrollView AutomationId="OrientationTool_ScrollView">
+        <VerticalStackLayout
+            Padding="20, 16"
+            Spacing="16">
+
+            <Border
+                Padding="16, 14"
+                BackgroundColor="#1E293B"
+                Stroke="#334155"
+                StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="10">
+                    <Label
+                        AutomationId="OrientationTool_TargetModeHeaderLabel"
+                        FontAttributes="Bold"
+                        FontSize="17"
+                        Text="{x:Static strings:AppStrings.Orientation_TargetModeSection}"
+                        TextColor="#F8FAFC" />
+
+                    <Label
+                        AutomationId="OrientationTool_CurrentBadgeLabel"
+                        FontAttributes="Bold"
+                        FontSize="13"
+                        Text="{Binding CurrentOrientationBadge}"
+                        TextColor="#FBBF24" />
+
+                    <Label
+                        AutomationId="OrientationTool_StatusMessageLabel"
+                        FontSize="12"
+                        Text="{Binding StatusMessage}"
+                        TextColor="#94A3B8" />
+
+                    <HorizontalStackLayout Spacing="12">
+                        <Switch
+                            AutomationId="OrientationTool_RemoteAdbSwitch"
+                            IsToggled="{Binding UseRemoteAdbDevice}"
+                            OnColor="#38BDF8" />
+                        <Label
+                            AutomationId="OrientationTool_RemoteAdbLabel"
+                            FontSize="13"
+                            Text="{x:Static strings:AppStrings.Orientation_UseRemoteAdbLabel}"
+                            TextColor="#E2E8F0"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Button
+                            AutomationId="OrientationTool_RefreshDevicesButton"
+                            BackgroundColor="#334155"
+                            Command="{Binding RefreshAdbDevicesCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Orientation_RefreshDevicesButton}"
+                            TextColor="White" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border
+                Padding="16, 14"
+                BackgroundColor="#1E293B"
+                Stroke="#334155"
+                StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="12">
+                    <Label
+                        AutomationId="OrientationTool_QuickControlsHeaderLabel"
+                        FontAttributes="Bold"
+                        FontSize="17"
+                        Text="{x:Static strings:AppStrings.Orientation_QuickControlsSection}"
+                        TextColor="#F8FAFC" />
+
+                    <Grid
+                        ColumnDefinitions="*, *, *"
+                        ColumnSpacing="10"
+                        RowDefinitions="Auto, Auto"
+                        RowSpacing="10">
+                        <Button
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            AutomationId="OrientationTool_PortraitButton"
+                            BackgroundColor="#0284C7"
+                            Command="{Binding SetPortraitCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Orientation_PortraitButton}"
+                            TextColor="White" />
+                        <Button
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            AutomationId="OrientationTool_LandscapeButton"
+                            BackgroundColor="#059669"
+                            Command="{Binding SetLandscapeCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Orientation_LandscapeButton}"
+                            TextColor="White" />
+                        <Button
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            AutomationId="OrientationTool_ReversePortraitButton"
+                            BackgroundColor="#4F46E5"
+                            Command="{Binding SetReversePortraitCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Orientation_ReversePortraitButton}"
+                            TextColor="White" />
+                        <Button
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            AutomationId="OrientationTool_ReverseLandscapeButton"
+                            BackgroundColor="#7C3AED"
+                            Command="{Binding SetReverseLandscapeCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Orientation_ReverseLandscapeButton}"
+                            TextColor="White" />
+                        <Button
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            AutomationId="OrientationTool_SensorButton"
+                            BackgroundColor="#D97706"
+                            Command="{Binding SetSensorCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Orientation_SensorButton}"
+                            TextColor="White" />
+                        <Button
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            AutomationId="OrientationTool_UnlockButton"
+                            BackgroundColor="#334155"
+                            Command="{Binding ResetOrientationCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Orientation_UnlockButton}"
+                            TextColor="White" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border
+                Padding="16, 14"
+                BackgroundColor="#1E293B"
+                Stroke="#334155"
+                StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="12">
+                    <Label
+                        AutomationId="OrientationTool_DisplayOverrideHeaderLabel"
+                        FontAttributes="Bold"
+                        FontSize="17"
+                        Text="{x:Static strings:AppStrings.Orientation_DisplayOverrideSection}"
+                        TextColor="#F8FAFC" />
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Button
+                            AutomationId="OrientationTool_PresetPhoneButton"
+                            BackgroundColor="#1D4ED8"
+                            Command="{Binding ApplyPhonePresetCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Orientation_PresetPhoneButton}"
+                            TextColor="White" />
+                        <Button
+                            AutomationId="OrientationTool_PresetRuggedButton"
+                            BackgroundColor="#047857"
+                            Command="{Binding ApplyRuggedHandheldPresetCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Orientation_PresetRuggedButton}"
+                            TextColor="White" />
+                        <Button
+                            AutomationId="OrientationTool_PresetTabletButton"
+                            BackgroundColor="#6D28D9"
+                            Command="{Binding ApplyTabletPresetCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Orientation_PresetTabletButton}"
+                            TextColor="White" />
+                        <Button
+                            AutomationId="OrientationTool_ResetDisplayButton"
+                            BackgroundColor="#334155"
+                            Command="{Binding ResetDisplayPresetCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Orientation_ResetDisplayButton}"
+                            TextColor="White" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

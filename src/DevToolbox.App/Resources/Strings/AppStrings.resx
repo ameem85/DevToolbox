@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="0" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="App_Title" xml:space="preserve">
+    <value>DevToolbox Companion</value>
+  </data>
+  <data name="App_Subtitle" xml:space="preserve">
+    <value>Cross-Platform Debugging, Overlay, Network Proxy &amp; Device State Toolkit</value>
+  </data>
+  <data name="Nav_Dashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="Nav_FloatingOverlay" xml:space="preserve">
+    <value>Floating Overlay</value>
+  </data>
+  <data name="Nav_NetworkProxy" xml:space="preserve">
+    <value>Network Proxy &amp; Mocks</value>
+  </data>
+  <data name="Nav_OrientationHelper" xml:space="preserve">
+    <value>Orientation &amp; State</value>
+  </data>
+  <data name="Dashboard_HeaderTitle" xml:space="preserve">
+    <value>Developer Companion Workbench</value>
+  </data>
+  <data name="Dashboard_HeaderSubtitle" xml:space="preserve">
+    <value>Modular plug-and-play utilities for on-device and desktop-to-mobile QA &amp; debugging</value>
+  </data>
+  <data name="Dashboard_QuickLaunchOverlay" xml:space="preserve">
+    <value>Toggle Floating Overlay</value>
+  </data>
+  <data name="Dashboard_QuickToggleProxy" xml:space="preserve">
+    <value>Toggle Local Proxy</value>
+  </data>
+  <data name="Dashboard_QuickCycleOrientation" xml:space="preserve">
+    <value>Cycle Orientation</value>
+  </data>
+  <data name="Dashboard_RegisteredModulesHeader" xml:space="preserve">
+    <value>Registered Plug-and-Play Modules</value>
+  </data>
+  <data name="Dashboard_OpenModuleButton" xml:space="preserve">
+    <value>Open Tool</value>
+  </data>
+  <data name="Dashboard_ToggleModuleButton" xml:space="preserve">
+    <value>Start / Stop</value>
+  </data>
+  <data name="Module_FloatingOverlay_Title" xml:space="preserve">
+    <value>Floating Widget / Overlay Engine</value>
+  </data>
+  <data name="Module_FloatingOverlay_Description" xml:space="preserve">
+    <value>System-level Always-On-Top overlay (Android WindowManager / Windows Win32 TopMost / iOS In-App HUD) with quick actions.</value>
+  </data>
+  <data name="Module_NetworkProxy_Title" xml:space="preserve">
+    <value>Network Proxy &amp; Mocking Tool</value>
+  </data>
+  <data name="Module_NetworkProxy_Description" xml:space="preserve">
+    <value>Local HTTP/HTTPS interceptor with Map Local payloads, header/URL rewrites, latency, and fault injection rules.</value>
+  </data>
+  <data name="Module_OrientationHelper_Title" xml:space="preserve">
+    <value>Orientation &amp; State Helper</value>
+  </data>
+  <data name="Module_OrientationHelper_Description" xml:space="preserve">
+    <value>Force-override Portrait, Landscape, Reverse, or Sensor orientation and display metrics locally or via ADB bridge.</value>
+  </data>
+  <data name="Module_LogcatReader_Title" xml:space="preserve">
+    <value>Logcat &amp; Unified Stream Reader</value>
+  </data>
+  <data name="Module_LogcatReader_Description" xml:space="preserve">
+    <value>Plug-and-play module template for high-frequency device log streaming and tag filtering.</value>
+  </data>
+  <data name="Module_DeviceInspector_Title" xml:space="preserve">
+    <value>Device &amp; Environment Inspector</value>
+  </data>
+  <data name="Module_DeviceInspector_Description" xml:space="preserve">
+    <value>Plug-and-play module template for inspecting runtime hardware, ABI, display density, and OS capabilities.</value>
+  </data>
+  <data name="Module_DeepLinkTester_Title" xml:space="preserve">
+    <value>Deep-Link &amp; Intent Dispatcher</value>
+  </data>
+  <data name="Module_DeepLinkTester_Description" xml:space="preserve">
+    <value>Plug-and-play module template for testing custom URI schemes and App Links locally or via ADB.</value>
+  </data>
+  <data name="Overlay_PageTitle" xml:space="preserve">
+    <value>Floating Widget / Overlay Engine</value>
+  </data>
+  <data name="Overlay_SectionPermissions" xml:space="preserve">
+    <value>System Overlay Permissions &amp; ADB Provisioning</value>
+  </data>
+  <data name="Overlay_CheckPermissionButton" xml:space="preserve">
+    <value>Check Overlay Permission</value>
+  </data>
+  <data name="Overlay_RequestPermissionButton" xml:space="preserve">
+    <value>Request OS Overlay Permission</value>
+  </data>
+  <data name="Overlay_GrantViaAdbButton" xml:space="preserve">
+    <value>Grant via ADB appops (Android)</value>
+  </data>
+  <data name="Overlay_SectionControls" xml:space="preserve">
+    <value>Overlay Window Lifecycle &amp; Quick Actions</value>
+  </data>
+  <data name="Overlay_ShowButton" xml:space="preserve">
+    <value>Launch Floating Overlay</value>
+  </data>
+  <data name="Overlay_HideButton" xml:space="preserve">
+    <value>Dismiss Floating Overlay</value>
+  </data>
+  <data name="Overlay_PinTopMostLabel" xml:space="preserve">
+    <value>Pin Always-On-Top (HWND_TOPMOST / TYPE_APPLICATION_OVERLAY)</value>
+  </data>
+  <data name="Overlay_OpacityLabel" xml:space="preserve">
+    <value>Overlay Opacity</value>
+  </data>
+  <data name="Overlay_QuickActionsHeader" xml:space="preserve">
+    <value>Registered Overlay Quick-Actions (From Active Tool Modules)</value>
+  </data>
+  <data name="Overlay_RunQuickActionButton" xml:space="preserve">
+    <value>Invoke</value>
+  </data>
+  <data name="Proxy_PageTitle" xml:space="preserve">
+    <value>Network Proxy &amp; Mocking Engine</value>
+  </data>
+  <data name="Proxy_ListenerSectionTitle" xml:space="preserve">
+    <value>Embedded HTTP/HTTPS Proxy Listener &amp; ADB Reverse Tunnel</value>
+  </data>
+  <data name="Proxy_PortLabel" xml:space="preserve">
+    <value>Listen Port</value>
+  </data>
+  <data name="Proxy_StartButton" xml:space="preserve">
+    <value>Start Proxy Server</value>
+  </data>
+  <data name="Proxy_StopButton" xml:space="preserve">
+    <value>Stop Proxy Server</value>
+  </data>
+  <data name="Proxy_AdbReverseButton" xml:space="preserve">
+    <value>Bind ADB Reverse Tunnel (tcp:8888)</value>
+  </data>
+  <data name="Proxy_TestSimulatorSectionTitle" xml:space="preserve">
+    <value>Interactive Traffic &amp; Rule Simulator</value>
+  </data>
+  <data name="Proxy_SimulateProfileButton" xml:space="preserve">
+    <value>Test GET /api/v1/user/profile (Map Local)</value>
+  </data>
+  <data name="Proxy_SimulateCheckoutButton" xml:space="preserve">
+    <value>Test POST /api/v1/checkout (503 Fault)</value>
+  </data>
+  <data name="Proxy_SimulateCatalogButton" xml:space="preserve">
+    <value>Test GET /api/v1/catalog (Rewrite + Latency)</value>
+  </data>
+  <data name="Proxy_RulesSectionTitle" xml:space="preserve">
+    <value>Mock, Rewrite &amp; Fault Injection Rules</value>
+  </data>
+  <data name="Proxy_AddRuleSectionTitle" xml:space="preserve">
+    <value>Create New Mock / Rewrite / Fault Rule</value>
+  </data>
+  <data name="Proxy_NewRuleNamePlaceholder" xml:space="preserve">
+    <value>Rule Name (e.g. Mock Auth 401)</value>
+  </data>
+  <data name="Proxy_NewRuleUrlPlaceholder" xml:space="preserve">
+    <value>URL Pattern (e.g. */api/v1/orders*)</value>
+  </data>
+  <data name="Proxy_NewRulePayloadPlaceholder" xml:space="preserve">
+    <value>Inline JSON payload or local file path</value>
+  </data>
+  <data name="Proxy_AddRuleButton" xml:space="preserve">
+    <value>Add Rule</value>
+  </data>
+  <data name="Proxy_DeleteRuleButton" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Proxy_TrafficSectionTitle" xml:space="preserve">
+    <value>Live Captured HTTP/HTTPS Traffic (Direct IoC Stream)</value>
+  </data>
+  <data name="Proxy_ClearTrafficButton" xml:space="preserve">
+    <value>Clear Traffic Log</value>
+  </data>
+  <data name="Orientation_PageTitle" xml:space="preserve">
+    <value>Orientation &amp; Device State Helper</value>
+  </data>
+  <data name="Orientation_TargetModeSection" xml:space="preserve">
+    <value>Target Execution Scope (On-Device vs. ADB Bridge)</value>
+  </data>
+  <data name="Orientation_UseRemoteAdbLabel" xml:space="preserve">
+    <value>Route commands to connected Android device via ADB Bridge</value>
+  </data>
+  <data name="Orientation_RefreshDevicesButton" xml:space="preserve">
+    <value>Refresh Connected ADB Devices</value>
+  </data>
+  <data name="Orientation_QuickControlsSection" xml:space="preserve">
+    <value>Force Screen Orientation Override</value>
+  </data>
+  <data name="Orientation_PortraitButton" xml:space="preserve">
+    <value>Portrait (0°)</value>
+  </data>
+  <data name="Orientation_LandscapeButton" xml:space="preserve">
+    <value>Landscape (90°)</value>
+  </data>
+  <data name="Orientation_ReversePortraitButton" xml:space="preserve">
+    <value>Reverse Portrait (180°)</value>
+  </data>
+  <data name="Orientation_ReverseLandscapeButton" xml:space="preserve">
+    <value>Reverse Landscape (270°)</value>
+  </data>
+  <data name="Orientation_SensorButton" xml:space="preserve">
+    <value>Sensor Auto-Rotate</value>
+  </data>
+  <data name="Orientation_UnlockButton" xml:space="preserve">
+    <value>Reset / Unlock</value>
+  </data>
+  <data name="Orientation_DisplayOverrideSection" xml:space="preserve">
+    <value>Responsive Display Metrics &amp; Density Presets</value>
+  </data>
+  <data name="Orientation_PresetPhoneButton" xml:space="preserve">
+    <value>Phone Compact (1080x2400 @ 420dpi)</value>
+  </data>
+  <data name="Orientation_PresetRuggedButton" xml:space="preserve">
+    <value>Handheld Scanner CT47 (1080x2160 @ 480dpi)</value>
+  </data>
+  <data name="Orientation_PresetTabletButton" xml:space="preserve">
+    <value>Tablet Landscape (2560x1600 @ 320dpi)</value>
+  </data>
+  <data name="Orientation_ResetDisplayButton" xml:space="preserve">
+    <value>Reset Display Override</value>
+  </data>
+  <data name="QuickAction_HideOverlay" xml:space="preserve">
+    <value>Hide Overlay</value>
+  </data>
+  <data name="QuickAction_ToggleProxy" xml:space="preserve">
+    <value>Toggle Proxy</value>
+  </data>
+  <data name="QuickAction_ForcePortrait" xml:space="preserve">
+    <value>Force Portrait</value>
+  </data>
+  <data name="QuickAction_ForceLandscape" xml:space="preserve">
+    <value>Force Landscape</value>
+  </data>
+  <data name="QuickAction_CycleOrientation" xml:space="preserve">
+    <value>Cycle Orientation</value>
+  </data>
+  <data name="Hud_FloatingTitle" xml:space="preserve">
+    <value>DevToolbox HUD</value>
+  </data>
+</root>

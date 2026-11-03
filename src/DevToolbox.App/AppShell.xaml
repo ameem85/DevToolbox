@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell
+    x:Class="DevToolbox.App.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:strings="clr-namespace:DevToolbox.App.Resources.Strings"
+    xmlns:views="clr-namespace:DevToolbox.App.Views"
+    Title="{x:Static strings:AppStrings.App_Title}"
+    AutomationId="Main_AppShell"
+    BackgroundColor="#0F172A"
+    FlyoutBackgroundColor="#1E293B"
+    Shell.TabBarBackgroundColor="#1E293B"
+    Shell.TabBarTitleColor="#38BDF8"
+    Shell.TabBarUnselectedColor="#94A3B8">
+
+    <TabBar AutomationId="Main_TabBar">
+        <ShellContent
+            Title="{x:Static strings:AppStrings.Nav_Dashboard}"
+            AutomationId="Nav_DashboardTab"
+            ContentTemplate="{DataTemplate views:DashboardPage}"
+            Route="DashboardPage" />
+        <ShellContent
+            Title="{x:Static strings:AppStrings.Nav_FloatingOverlay}"
+            AutomationId="Nav_FloatingOverlayTab"
+            ContentTemplate="{DataTemplate views:OverlayToolPage}"
+            Route="OverlayToolPage" />
+        <ShellContent
+            Title="{x:Static strings:AppStrings.Nav_NetworkProxy}"
+            AutomationId="Nav_NetworkProxyTab"
+            ContentTemplate="{DataTemplate views:NetworkProxyPage}"
+            Route="NetworkProxyPage" />
+        <ShellContent
+            Title="{x:Static strings:AppStrings.Nav_OrientationHelper}"
+            AutomationId="Nav_OrientationHelperTab"
+            ContentTemplate="{DataTemplate views:OrientationToolPage}"
+            Route="OrientationToolPage" />
+    </TabBar>
+
+</Shell>
