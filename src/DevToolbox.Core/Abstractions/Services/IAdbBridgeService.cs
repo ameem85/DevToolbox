@@ -14,7 +14,8 @@ public sealed record AdbCommandResult(
 
 /// <summary>
 /// Desktop-to-Mobile ADB companion bridge for controlling connected Android devices from Windows Desktop.
-/// Supports permission provisioning (appops SYSTEM_ALERT_WINDOW), orientation overrides, reverse proxy tunnels, and deep-links.
+/// Supports permission provisioning (appops SYSTEM_ALERT_WINDOW), orientation overrides, reverse proxy tunnels,
+/// Root CA certificate push, device property inspection, and deep-links.
 /// </summary>
 public interface IAdbBridgeService
 {
@@ -55,6 +56,15 @@ public interface IAdbBridgeService
     Task<AdbCommandResult> LaunchDeepLinkAsync(
         string deepLinkUri,
         string? packageName = null,
+        string? deviceSerial = null,
+        CancellationToken cancellationToken = default);
+
+    Task<AdbCommandResult> PushRootCertificateToDeviceAsync(
+        string localCerFilePath,
+        string? deviceSerial = null,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyDictionary<string, string>> GetAndroidDevicePropertiesAsync(
         string? deviceSerial = null,
         CancellationToken cancellationToken = default);
 }

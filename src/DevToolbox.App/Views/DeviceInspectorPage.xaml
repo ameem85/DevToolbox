@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="DevToolbox.App.Views.DeviceInspectorPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:services="clr-namespace:DevToolbox.Core.Abstractions.Services;assembly=DevToolbox.Core"
+    xmlns:strings="clr-namespace:DevToolbox.App.Resources.Strings"
+    xmlns:vm="clr-namespace:DevToolbox.App.ViewModels"
+    Title="{x:Static strings:AppStrings.Inspector_PageTitle}"
+    x:DataType="vm:DeviceInspectorViewModel"
+    AutomationId="DeviceInspector_Page"
+    BackgroundColor="#0F172A">
+
+    <ScrollView AutomationId="DeviceInspector_ScrollView">
+        <VerticalStackLayout
+            Padding="20, 16"
+            Spacing="16">
+
+            <Border
+                Padding="16, 14"
+                BackgroundColor="#1E293B"
+                Stroke="#334155"
+                StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="10">
+                    <Label
+                        AutomationId="DeviceInspector_HeaderLabel"
+                        FontAttributes="Bold"
+                        FontSize="17"
+                        Text="{x:Static strings:AppStrings.Inspector_ControlsSectionTitle}"
+                        TextColor="#F8FAFC" />
+
+                    <Label
+                        AutomationId="DeviceInspector_StatusSummaryLabel"
+                        FontSize="13"
+                        Text="{Binding StatusSummary}"
+                        TextColor="#38BDF8" />
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Button
+                            AutomationId="DeviceInspector_RefreshButton"
+                            BackgroundColor="#0284C7"
+                            Command="{Binding RefreshTelemetryCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Inspector_RefreshButton}"
+                            TextColor="White" />
+                        <Button
+                            AutomationId="DeviceInspector_CopyReportButton"
+                            BackgroundColor="#059669"
+                            Command="{Binding CopyReportCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Inspector_CopyReportButton}"
+                            TextColor="White" />
+                    </HorizontalStackLayout>
+
+                    <Entry
+                        AutomationId="DeviceInspector_SearchEntry"
+                        BackgroundColor="#0F172A"
+                        Placeholder="{x:Static strings:AppStrings.Inspector_SearchPlaceholder}"
+                        PlaceholderColor="#64748B"
+                        Text="{Binding SearchFilter}"
+                        TextColor="#F8FAFC" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Label
+                AutomationId="DeviceInspector_PropertiesHeaderLabel"
+                FontAttributes="Bold"
+                FontSize="16"
+                Text="{x:Static strings:AppStrings.Inspector_PropertiesHeader}"
+                TextColor="#E2E8F0" />
+
+            <CollectionView
+                AutomationId="DeviceInspector_PropertiesCollectionView"
+                ItemsSource="{Binding FilteredProperties}"
+                SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout
+                        ItemSpacing="8"
+                        Orientation="Vertical" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="services:DevicePropertyItem">
+                        <Border
+                            Padding="14, 10"
+                            BackgroundColor="#1E293B"
+                            Stroke="#334155"
+                            StrokeShape="RoundRectangle 8">
+                            <Grid
+                                ColumnDefinitions="180, 220, *"
+                                ColumnSpacing="12">
+                                <Label
+                                    Grid.Column="0"
+                                    AutomationId="DeviceInspector_PropertyCategoryLabel"
+                                    FontAttributes="Bold"
+                                    FontSize="12"
+                                    Text="{Binding Category}"
+                                    TextColor="#38BDF8"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    AutomationId="DeviceInspector_PropertyKeyLabel"
+                                    FontAttributes="Bold"
+                                    FontSize="13"
+                                    Text="{Binding Key}"
+                                    TextColor="#F8FAFC"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="2"
+                                    AutomationId="DeviceInspector_PropertyValueLabel"
+                                    FontSize="13"
+                                    Text="{Binding Value}"
+                                    TextColor="#34D399"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

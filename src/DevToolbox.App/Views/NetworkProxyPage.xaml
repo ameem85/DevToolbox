@@ -36,6 +36,12 @@
                         Text="{Binding StatusBanner}"
                         TextColor="#34D399" />
 
+                    <Label
+                        AutomationId="NetworkProxy_CertificateStatusLabel"
+                        FontSize="12"
+                        Text="{Binding CertificateStatusBanner}"
+                        TextColor="#38BDF8" />
+
                     <HorizontalStackLayout Spacing="10">
                         <Label
                             AutomationId="NetworkProxy_PortLabel"
@@ -70,6 +76,23 @@
                             Command="{Binding BindAdbReverseTunnelCommand}"
                             CornerRadius="8"
                             Text="{x:Static strings:AppStrings.Proxy_AdbReverseButton}"
+                            TextColor="White" />
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Button
+                            AutomationId="NetworkProxy_ExportRootCaButton"
+                            BackgroundColor="#0284C7"
+                            Command="{Binding ExportRootCaCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Proxy_ExportRootCaButton}"
+                            TextColor="White" />
+                        <Button
+                            AutomationId="NetworkProxy_PushRootCaAdbButton"
+                            BackgroundColor="#6D28D9"
+                            Command="{Binding PushRootCaViaAdbCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Proxy_PushRootCaAdbButton}"
                             TextColor="White" />
                     </HorizontalStackLayout>
                 </VerticalStackLayout>

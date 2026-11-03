@@ -36,15 +36,18 @@ public sealed partial class MockRuleItemViewModel(
 public sealed partial class NetworkProxyViewModel : ObservableObject, IDisposable
 {
     private readonly INetworkProxyService _proxyService;
+    private readonly IProxyCertificateService _certificateService;
     private readonly IAdbBridgeService _adbBridgeService;
     private readonly IDisposable _trafficSubscription;
 
     public NetworkProxyViewModel(
         INetworkProxyService proxyService,
+        IProxyCertificateService certificateService,
         IAdbBridgeService adbBridgeService,
         IHighFrequencyUpdateSink<CapturedTrafficEntry> trafficSink)
     {
         _proxyService = proxyService;
+        _certificateService = certificateService;
         _adbBridgeService = adbBridgeService;
 
         // Subscribe directly to the IoC high-frequency sink for real-time traffic capture updates
@@ -74,6 +77,9 @@ public sealed partial class NetworkProxyViewModel : ObservableObject, IDisposabl
 
     [ObservableProperty]
     public partial string StatusBanner { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string CertificateStatusBanner { get; set; } = "HTTPS MITM Root CA ready (TLS 1.2 / TLS 1.3 CONNECT termination)";
 
     [ObservableProperty]
     public partial string NewRuleName { get; set; } = "Mock Orders 200";
@@ -124,6 +130,23 @@ public sealed partial class NetworkProxyViewModel : ObservableObject, IDisposabl
         StatusBanner = result.Success
             ? $"ADB reverse tunnel bound: device tcp:{port} → host tcp:{port}"
             : $"ADB reverse failed: {result.StandardError}";
+    }
+
+    [RelayCommand]
+    private async Task ExportRootCaAsync()
+    {
+        var exportResult = await _certificateService.ExportRootCertificateAsync();
+        CertificateStatusBanner = exportResult.StatusMessage;
+    }
+
+    [RelayCommand]
+    private async Task PushRootCaViaAdbAsync()
+    {
+        var exportResult = await _certificateService.ExportRootCertificateAsync();
+        var pushResult = await _adbBridgeService.PushRootCertificateToDeviceAsync(exportResult.CerFilePath);
+        CertificateStatusBanner = pushResult.Success
+            ? "Pushed DevToolboxRootCA.cer to /sdcard/Download/DevToolboxRootCA.cer on Android device"
+            : $"Exported locally ({exportResult.CerFilePath}); ADB push result: {pushResult.StandardError}";
     }
 
     [RelayCommand]

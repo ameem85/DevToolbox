@@ -11,15 +11,19 @@ public static class ServiceCollectionExtensions
 {
     /// <summary>
     /// Registers the DevToolbox core plugin registry, high-frequency direct-update sinks,
-    /// local network proxy engine, ADB bridge, and default tool modules.
+    /// MITM certificate authority, local network proxy engine, ADB bridge, logcat stream,
+    /// device inspector, and built-in developer tool modules.
     /// </summary>
     public static IServiceCollection AddDevToolboxCore(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
 
         services.TryAddSingleton(typeof(IHighFrequencyUpdateSink<>), typeof(HighFrequencyUpdateSink<>));
+        services.TryAddSingleton<IProxyCertificateService, ProxyCertificateService>();
         services.TryAddSingleton<IAdbBridgeService, AdbBridgeService>();
         services.TryAddSingleton<INetworkProxyService, LocalNetworkProxyEngine>();
+        services.TryAddSingleton<ILogcatStreamService, LogcatStreamService>();
+        services.TryAddSingleton<IDeviceInspectorService, DeviceInspectorService>();
         services.TryAddSingleton<IDevToolRegistry, DevToolRegistry>();
 
         services.AddDevToolModule<FloatingOverlayToolModule>();

@@ -2,65 +2,24 @@
 
 Cross-platform desktop and mobile developer & QA companion toolkit supporting **Android**, **iOS**, and **Windows** from a modular .NET 10 MAUI architecture.
 
-## Solution Structure
+## Implemented Developer & QA Modules
 
-```text
-DevToolbox/
-├── DevToolbox.slnx
-├── Settings.XamlStyler.json
-├── src/
-│   ├── DevToolbox.Core/                          # Pure .NET 10 platform-agnostic contracts, proxy engine & plugin container
-│   │   ├── Abstractions/
-│   │   │   ├── Plugins/
-│   │   │   │   ├── IDevToolModule.cs             # Plug-and-play module contract + OverlayQuickAction
-│   │   │   │   └── IDevToolRegistry.cs           # Module discovery, ordering & lifecycle coordinator
-│   │   │   └── Services/
-│   │   │       ├── IHighFrequencyUpdateSink.cs   # Direct IoC update sink for high-frequency streams
-│   │   │       ├── IOverlayService.cs            # System / In-App floating overlay contract
-│   │   │       ├── INetworkProxyService.cs       # Local HTTP/HTTPS proxy, mock, rewrite & fault-injection contract
-│   │   │       ├── IOrientationStateService.cs   # Screen orientation & display override contract
-│   │   │       └── IAdbBridgeService.cs          # Desktop-to-Android ADB companion bridge contract
-│   │   ├── DependencyInjection/
-│   │   │   └── ServiceCollectionExtensions.cs    # AddDevToolboxCore() and AddDevToolModule<TModule>()
-│   │   ├── Modules/
-│   │   │   ├── FloatingOverlayToolModule.cs      # Tool 1: Floating Widget / Overlay Engine
-│   │   │   ├── NetworkProxyToolModule.cs         # Tool 2: Network Proxy & Mocking Tool
-│   │   │   ├── OrientationHelperToolModule.cs    # Tool 3: Orientation & State Helper
-│   │   │   └── FutureToolModules.cs              # Plug-and-play templates: Logcat, Device Info, Deep-Link Tester
-│   │   └── Services/
-│   │       ├── DevToolRegistry.cs
-│   │       ├── HighFrequencyUpdateSink.cs
-│   │       ├── LocalNetworkProxyEngine.cs        # TCP/HTTP proxy with Map Local, Rewrite, Latency & Error Injection
-│   │       └── AdbBridgeService.cs               # ADB appops, rotation, wm size/density, and reverse tunnel runner
-│   └── DevToolbox.App/                           # .NET 10 MAUI Cross-Platform Dashboard & Native Platform Engines
-│       ├── Platforms/
-│       │   ├── Android/Services/
-│       │   │   ├── AndroidOverlayService.cs      # IWindowManager + TYPE_APPLICATION_OVERLAY + SYSTEM_ALERT_WINDOW
-│       │   │   └── AndroidOrientationStateService.cs
-│       │   ├── Windows/Services/
-│       │   │   ├── WindowsOverlayService.cs      # WinUI 3 AppWindow OverlappedPresenter + Win32 SetWindowPos(HWND_TOPMOST)
-│       │   │   └── WindowsOrientationStateService.cs
-│       │   └── iOS/Services/
-│       │       ├── IosOverlayService.cs          # UIWindow (UIWindowLevel.Alert + 1) in-app floating HUD
-│       │       └── IosOrientationStateService.cs # UIWindowScene.RequestGeometryUpdate (iOS 16+)
-│       ├── Resources/Strings/
-│       │   ├── AppStrings.resx                   # Localized UI strings
-│       │   └── AppStrings.Designer.cs
-│       ├── ViewModels/
-│       │   ├── DashboardViewModel.cs
-│       │   ├── OverlayToolViewModel.cs
-│       │   ├── NetworkProxyViewModel.cs
-│       │   └── OrientationToolViewModel.cs
-│       └── Views/
-│           ├── DashboardPage.xaml
-│           ├── OverlayToolPage.xaml
-│           ├── NetworkProxyPage.xaml
-│           ├── OrientationToolPage.xaml
-│           └── FloatingHudPage.cs
-└── tests/
-    └── DevToolbox.Core.Tests/
-        └── DevToolboxArchitectureTests.cs        # xUnit verification of plugin registry, proxy rules & IoC sink
-```
+1. **Floating Widget / Overlay Engine** ([`FloatingOverlayToolModule`](src/DevToolbox.Core/Modules/FloatingOverlayToolModule.cs) / [`OverlayToolPage`](src/DevToolbox.App/Views/OverlayToolPage.xaml)):
+   - **Android**: Native `IWindowManager` overlay (`TYPE_APPLICATION_OVERLAY` / `SYSTEM_ALERT_WINDOW`) with drag-to-move touch handling and quick-action bar.
+   - **Windows**: Dedicated compact Always-On-Top HUD window ([`FloatingHudPage`](src/DevToolbox.App/Views/FloatingHudPage.cs)) using WinUI 3 `OverlappedPresenter` + Win32 `SetWindowPos(HWND_TOPMOST)` and `WS_EX_LAYERED` alpha transparency.
+   - **iOS**: In-app high-z-order `UIWindow` (`UIWindowLevel.Alert + 1`) floating overlay layer.
+2. **Network Proxy & Mocking Engine** ([`NetworkProxyToolModule`](src/DevToolbox.Core/Modules/NetworkProxyToolModule.cs) / [`NetworkProxyPage`](src/DevToolbox.App/Views/NetworkProxyPage.xaml)):
+   - Local HTTP/HTTPS MITM proxy server ([`LocalNetworkProxyEngine`](src/DevToolbox.Core/Services/LocalNetworkProxyEngine.cs)) with dynamic Root CA + per-host SAN leaf certificate generation ([`ProxyCertificateService`](src/DevToolbox.Core/Services/ProxyCertificateService.cs)) for `CONNECT` TLS 1.2/1.3 termination.
+   - Supports **Map Local** payloads/files, **Header & URL Rewrite** rules, **Latency Injection**, and **HTTP Fault/Error Injection** (e.g., 503/429/500), plus `adb reverse` port binding and one-click Root CA `.cer`/`.pem` export & ADB push.
+   - Streams captured traffic directly via [`IHighFrequencyUpdateSink<CapturedTrafficEntry>`](src/DevToolbox.Core/Abstractions/Services/IHighFrequencyUpdateSink.cs).
+3. **Orientation & State Helper** ([`OrientationHelperToolModule`](src/DevToolbox.Core/Modules/OrientationHelperToolModule.cs) / [`OrientationToolPage`](src/DevToolbox.App/Views/OrientationToolPage.xaml)):
+   - Forces Portrait, Landscape, Reverse Portrait, Reverse Landscape, or Sensor Auto-Rotate both locally on-device (`Activity.RequestedOrientation` / `UIWindowScene.RequestGeometryUpdate` / Desktop viewport resize) and remotely on connected Android devices via ADB (`settings put system user_rotation`, `wm size`, `wm density`).
+4. **Logcat & Unified Stream Reader** ([`LogcatReaderToolModule`](src/DevToolbox.Core/Modules/FutureToolModules.cs) / [`LogcatToolPage`](src/DevToolbox.App/Views/LogcatToolPage.xaml)):
+   - Real-time Android `adb logcat` and unified runtime diagnostic streaming via [`LogcatStreamService`](src/DevToolbox.Core/Services/LogcatStreamService.cs) and [`IHighFrequencyUpdateSink<LogcatEntryRecord>`](src/DevToolbox.Core/Abstractions/Services/IHighFrequencyUpdateSink.cs) with level, tag, and full-text filtering plus QA checkpoint markers.
+5. **Device & Environment Inspector** ([`DeviceInfoInspectorToolModule`](src/DevToolbox.Core/Modules/FutureToolModules.cs) / [`DeviceInspectorPage`](src/DevToolbox.App/Views/DeviceInspectorPage.xaml)):
+   - Live inspection of Host/OS, CPU ABI, .NET runtime, process memory, active network interfaces, and connected Android device `getprop` / `wm` telemetry with one-click Markdown report copy.
+6. **Deep-Link & Intent Dispatcher** ([`DeepLinkTesterToolModule`](src/DevToolbox.Core/Modules/FutureToolModules.cs) / [`DeepLinkTesterPage`](src/DevToolbox.App/Views/DeepLinkTesterPage.xaml)):
+   - Interactive custom URI scheme (`devtoolbox://...`, `myapp://...`) and HTTPS Universal / App Link launcher supporting both local OS `Launcher` execution and Android `adb shell am start -W -a android.intent.action.VIEW -d ...` with saved presets and execution logs.
 
 ## Building & Running
 

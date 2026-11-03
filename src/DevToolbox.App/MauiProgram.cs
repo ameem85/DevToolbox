@@ -17,10 +17,10 @@ public static class MauiProgram
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit();
 
-        // Register Core modular architecture, proxy engine, ADB bridge, and 3 primary tool modules
+        // Register Core modular architecture, MITM certificate authority, proxy engine, ADB bridge, and core modules
         builder.Services.AddDevToolboxCore();
 
-        // Register extensible future tool module templates into the same plug-and-play registry
+        // Register additional developer & QA tool modules into the plug-and-play registry
         builder.Services.AddDevToolModule<LogcatReaderToolModule>();
         builder.Services.AddDevToolModule<DeviceInfoInspectorToolModule>();
         builder.Services.AddDevToolModule<DeepLinkTesterToolModule>();
@@ -42,11 +42,17 @@ public static class MauiProgram
         builder.Services.AddSingleton<OverlayToolViewModel>();
         builder.Services.AddSingleton<NetworkProxyViewModel>();
         builder.Services.AddSingleton<OrientationToolViewModel>();
+        builder.Services.AddSingleton<LogcatToolViewModel>();
+        builder.Services.AddSingleton<DeviceInspectorViewModel>();
+        builder.Services.AddSingleton<DeepLinkTesterViewModel>();
 
         builder.Services.AddTransient<DashboardPage>();
         builder.Services.AddTransient<OverlayToolPage>();
         builder.Services.AddTransient<NetworkProxyPage>();
         builder.Services.AddTransient<OrientationToolPage>();
+        builder.Services.AddTransient<LogcatToolPage>();
+        builder.Services.AddTransient<DeviceInspectorPage>();
+        builder.Services.AddTransient<DeepLinkTesterPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

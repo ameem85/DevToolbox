@@ -30,12 +30,16 @@ public sealed class DevToolboxArchitectureTests
         Assert.Equal(FloatingOverlayToolModule.ModuleId, modules[0].Id);
         Assert.Equal(NetworkProxyToolModule.ModuleId, modules[1].Id);
         Assert.Equal(OrientationHelperToolModule.ModuleId, modules[2].Id);
+        Assert.Equal(LogcatReaderToolModule.ModuleId, modules[3].Id);
+        Assert.Equal(DeviceInfoInspectorToolModule.ModuleId, modules[4].Id);
+        Assert.Equal(DeepLinkTesterToolModule.ModuleId, modules[5].Id);
 
         var quickActions = registry.GetAllOverlayQuickActions();
         Assert.Contains(quickActions, a => a.ActionId == "overlay.hide");
         Assert.Contains(quickActions, a => a.ActionId == "proxy.toggle");
         Assert.Contains(quickActions, a => a.ActionId == "orientation.portrait");
         Assert.Contains(quickActions, a => a.ActionId == "orientation.landscape");
+        Assert.Contains(quickActions, a => a.ActionId == "logcat.marker");
     }
 
     [Fact]
@@ -79,6 +83,67 @@ public sealed class DevToolboxArchitectureTests
 
         Assert.Equal(3, streamedEntries.Count);
         Assert.Equal(3, proxy.CurrentStatus.TotalInterceptedCount);
+    }
+
+    [Fact]
+    public async Task ProxyCertificateService_GeneratesRootCaAndDynamicHostLeafCertificates()
+    {
+        var services = new ServiceCollection();
+        services.AddDevToolboxCore();
+
+        await using var provider = services.BuildServiceProvider();
+        var certService = provider.GetRequiredService<IProxyCertificateService>();
+
+        var rootCa = certService.GetOrCreateRootCertificate();
+        Assert.NotNull(rootCa);
+        Assert.True(rootCa.HasPrivateKey);
+        Assert.Contains("DevToolbox MITM Root CA", rootCa.Subject);
+
+        var leafCert = certService.GetOrCreateServerCertificate("api.sandbox.dev");
+        Assert.NotNull(leafCert);
+        Assert.True(leafCert.HasPrivateKey);
+        Assert.Contains("api.sandbox.dev", leafCert.Subject);
+
+        var exportDir = Path.Combine(Path.GetTempPath(), "DevToolboxTests", Guid.NewGuid().ToString("N"));
+        try
+        {
+            var exportResult = await certService.ExportRootCertificateAsync(exportDir);
+            Assert.True(exportResult.Success);
+            Assert.True(File.Exists(exportResult.CerFilePath));
+            Assert.True(File.Exists(exportResult.PemFilePath));
+        }
+        finally
+        {
+            if (Directory.Exists(exportDir))
+            {
+                Directory.Delete(exportDir, recursive: true);
+            }
+        }
+    }
+
+    [Fact]
+    public async Task LogcatStreamAndDeviceInspectorServices_EmitAndCaptureDiagnostics()
+    {
+        var services = new ServiceCollection();
+        services.AddDevToolboxCore();
+
+        await using var provider = services.BuildServiceProvider();
+        var logcatService = provider.GetRequiredService<ILogcatStreamService>();
+        var logSink = provider.GetRequiredService<IHighFrequencyUpdateSink<LogcatEntryRecord>>();
+        var inspectorService = provider.GetRequiredService<IDeviceInspectorService>();
+
+        var receivedLogs = new List<LogcatEntryRecord>();
+        using var sub = logSink.Subscribe(batch => receivedLogs.AddRange(batch));
+
+        logcatService.EmitDiagnosticEntry("W", "QA.TestTag", "Simulated warning log line");
+        Assert.Single(receivedLogs);
+        Assert.Equal("W", receivedLogs[0].Level);
+        Assert.Equal("QA.TestTag", receivedLogs[0].Tag);
+
+        var report = await inspectorService.CaptureReportAsync();
+        Assert.NotEmpty(report.Items);
+        Assert.Contains(report.Items, i => i.Key == ".NET Runtime");
+        Assert.Contains("DevToolbox Diagnostic Snapshot", report.FormattedSummary);
     }
 
     private sealed class FakeOverlayService : IOverlayService

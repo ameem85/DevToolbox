@@ -34,6 +34,21 @@
             AutomationId="Nav_OrientationHelperTab"
             ContentTemplate="{DataTemplate views:OrientationToolPage}"
             Route="OrientationToolPage" />
+        <ShellContent
+            Title="{x:Static strings:AppStrings.Nav_LogcatReader}"
+            AutomationId="Nav_LogcatReaderTab"
+            ContentTemplate="{DataTemplate views:LogcatToolPage}"
+            Route="LogcatToolPage" />
+        <ShellContent
+            Title="{x:Static strings:AppStrings.Nav_DeviceInspector}"
+            AutomationId="Nav_DeviceInspectorTab"
+            ContentTemplate="{DataTemplate views:DeviceInspectorPage}"
+            Route="DeviceInspectorPage" />
+        <ShellContent
+            Title="{x:Static strings:AppStrings.Nav_DeepLinkTester}"
+            AutomationId="Nav_DeepLinkTesterTab"
+            ContentTemplate="{DataTemplate views:DeepLinkTesterPage}"
+            Route="DeepLinkTesterPage" />
     </TabBar>
 
 </Shell>

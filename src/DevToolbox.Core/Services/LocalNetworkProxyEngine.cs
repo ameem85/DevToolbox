@@ -1,18 +1,21 @@
 using System.Diagnostics;
 using System.Net;
+using System.Net.Security;
 using System.Net.Sockets;
+using System.Security.Authentication;
 using System.Text;
 using DevToolbox.Core.Abstractions.Services;
 
 namespace DevToolbox.Core.Services;
 
 /// <summary>
-/// Embedded local HTTP/HTTPS interception, rewrite, fault-injection, and mock-response proxy engine.
+/// Embedded local HTTP/HTTPS interception, MITM TLS termination, rewrite, fault-injection, and mock-response proxy engine.
 /// Uses <see cref="IHighFrequencyUpdateSink{CapturedTrafficEntry}"/> for high-frequency direct UI updates.
 /// </summary>
 public sealed class LocalNetworkProxyEngine : INetworkProxyService, IDisposable
 {
     private readonly IHighFrequencyUpdateSink<CapturedTrafficEntry> _trafficSink;
+    private readonly IProxyCertificateService _certificateService;
     private readonly HttpClient _upstreamClient;
     private readonly Lock _syncRoot = new();
     private readonly List<MockRule> _rules = [];
@@ -26,9 +29,11 @@ public sealed class LocalNetworkProxyEngine : INetworkProxyService, IDisposable
 
     public LocalNetworkProxyEngine(
         IHighFrequencyUpdateSink<CapturedTrafficEntry> trafficSink,
+        IProxyCertificateService? certificateService = null,
         HttpClient? upstreamClient = null)
     {
         _trafficSink = trafficSink ?? throw new ArgumentNullException(nameof(trafficSink));
+        _certificateService = certificateService ?? new ProxyCertificateService();
         _upstreamClient = upstreamClient ?? new HttpClient
         {
             Timeout = TimeSpan.FromSeconds(10)
@@ -384,18 +389,13 @@ public sealed class LocalNetworkProxyEngine : INetworkProxyService, IDisposable
 
             var method = parts[0];
             var rawTarget = parts[1];
-            var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var headers = await ReadHeadersAsync(reader, cancellationToken).ConfigureAwait(false);
 
-            string? headerLine;
-            while (!string.IsNullOrEmpty(headerLine = await reader.ReadLineAsync(cancellationToken).ConfigureAwait(false)))
+            // Handle HTTPS CONNECT tunnel with dynamic leaf certificate MITM TLS termination
+            if (string.Equals(method, "CONNECT", StringComparison.OrdinalIgnoreCase))
             {
-                var separatorIndex = headerLine.IndexOf(':');
-                if (separatorIndex > 0)
-                {
-                    var key = headerLine[..separatorIndex].Trim();
-                    var value = headerLine[(separatorIndex + 1)..].Trim();
-                    headers[key] = value;
-                }
+                await HandleHttpsConnectTunnelAsync(stream, rawTarget, cancellationToken).ConfigureAwait(false);
+                return;
             }
 
             var fullUrl = rawTarget.StartsWith("http", StringComparison.OrdinalIgnoreCase)
@@ -411,19 +411,106 @@ public sealed class LocalNetworkProxyEngine : INetworkProxyService, IDisposable
                 null,
                 cancellationToken).ConfigureAwait(false);
 
-            var payloadBytes = Encoding.UTF8.GetBytes(captured.ResponsePreview);
-            var responseHeader =
-                $"HTTP/1.1 {captured.StatusCode} {(captured.StatusCode < 400 ? "OK" : "MockedError")}\r\n" +
-                "Content-Type: application/json; charset=utf-8\r\n" +
-                $"Content-Length: {payloadBytes.Length}\r\n" +
-                "X-DevToolbox-Proxy: Intercepted\r\n" +
-                "Connection: close\r\n\r\n";
-
-            var headerBytes = Encoding.ASCII.GetBytes(responseHeader);
-            await stream.WriteAsync(headerBytes, cancellationToken).ConfigureAwait(false);
-            await stream.WriteAsync(payloadBytes, cancellationToken).ConfigureAwait(false);
-            await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
+            await WriteHttpResponseAsync(stream, captured, cancellationToken).ConfigureAwait(false);
         }
+    }
+
+    private async Task HandleHttpsConnectTunnelAsync(
+        NetworkStream clientStream,
+        string connectAuthority,
+        CancellationToken cancellationToken)
+    {
+        var hostParts = connectAuthority.Split(':', StringSplitOptions.RemoveEmptyEntries);
+        var targetHost = hostParts[0];
+
+        var establishedBytes = Encoding.ASCII.GetBytes(
+            "HTTP/1.1 200 Connection Established\r\n" +
+            "Proxy-Agent: DevToolbox-MITM/1.0\r\n\r\n");
+
+        await clientStream.WriteAsync(establishedBytes, cancellationToken).ConfigureAwait(false);
+        await clientStream.FlushAsync(cancellationToken).ConfigureAwait(false);
+
+        var serverCertificate = _certificateService.GetOrCreateServerCertificate(targetHost);
+        await using var sslStream = new SslStream(clientStream, leaveInnerStreamOpen: true);
+
+        var sslOptions = new SslServerAuthenticationOptions
+        {
+            ServerCertificate = serverCertificate,
+            ClientCertificateRequired = false,
+            EnabledSslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13,
+            CertificateRevocationCheckMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.NoCheck
+        };
+
+        await sslStream.AuthenticateAsServerAsync(sslOptions, cancellationToken).ConfigureAwait(false);
+
+        using var tlsReader = new StreamReader(sslStream, Encoding.ASCII, leaveOpen: true);
+        var innerRequestLine = await tlsReader.ReadLineAsync(cancellationToken).ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(innerRequestLine))
+        {
+            return;
+        }
+
+        var innerParts = innerRequestLine.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (innerParts.Length < 2)
+        {
+            return;
+        }
+
+        var innerMethod = innerParts[0];
+        var innerPath = innerParts[1];
+        var innerHeaders = await ReadHeadersAsync(tlsReader, cancellationToken).ConfigureAwait(false);
+
+        var httpsUrl = innerPath.StartsWith("https://", StringComparison.OrdinalIgnoreCase)
+            ? innerPath
+            : $"https://{targetHost}{innerPath}";
+
+        var captured = await EvaluateOrForwardRequestAsync(
+            innerMethod,
+            httpsUrl,
+            innerHeaders,
+            null,
+            cancellationToken).ConfigureAwait(false);
+
+        await WriteHttpResponseAsync(sslStream, captured, cancellationToken).ConfigureAwait(false);
+    }
+
+    private static async Task<Dictionary<string, string>> ReadHeadersAsync(
+        StreamReader reader,
+        CancellationToken cancellationToken)
+    {
+        var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        string? headerLine;
+        while (!string.IsNullOrEmpty(headerLine = await reader.ReadLineAsync(cancellationToken).ConfigureAwait(false)))
+        {
+            var separatorIndex = headerLine.IndexOf(':');
+            if (separatorIndex > 0)
+            {
+                var key = headerLine[..separatorIndex].Trim();
+                var value = headerLine[(separatorIndex + 1)..].Trim();
+                headers[key] = value;
+            }
+        }
+
+        return headers;
+    }
+
+    private static async Task WriteHttpResponseAsync(
+        Stream outputStream,
+        CapturedTrafficEntry captured,
+        CancellationToken cancellationToken)
+    {
+        var payloadBytes = Encoding.UTF8.GetBytes(captured.ResponsePreview);
+        var responseHeader =
+            $"HTTP/1.1 {captured.StatusCode} {(captured.StatusCode < 400 ? "OK" : "MockedError")}\r\n" +
+            "Content-Type: application/json; charset=utf-8\r\n" +
+            $"Content-Length: {payloadBytes.Length}\r\n" +
+            "X-DevToolbox-Proxy: Intercepted\r\n" +
+            "Connection: close\r\n\r\n";
+
+        var headerBytes = Encoding.ASCII.GetBytes(responseHeader);
+        await outputStream.WriteAsync(headerBytes, cancellationToken).ConfigureAwait(false);
+        await outputStream.WriteAsync(payloadBytes, cancellationToken).ConfigureAwait(false);
+        await outputStream.FlushAsync(cancellationToken).ConfigureAwait(false);
     }
 
     private MockRule? FindMatchingRule(string httpMethod, string requestUrl)
@@ -522,7 +609,7 @@ public sealed class LocalNetworkProxyEngine : INetworkProxyService, IDisposable
                 UrlPattern = "*/api/v1/user/profile*",
                 ResponseStatusCode = 200,
                 ResponseContentType = "application/json",
-                LocalPayloadOrFilePath = "{\"id\":\"qa-override-01\",\"role\":\"SuperAdmin\",\"featureFlags\":[\" beta_FloatingHud \",\" mock_Checkout \"]}"
+                LocalPayloadOrFilePath = "{\"id\":\"qa-override-01\",\"role\":\"SuperAdmin\",\"featureFlags\":[\"beta_FloatingHud\",\"mock_Checkout\"]}"
             },
             new MockRule
             {

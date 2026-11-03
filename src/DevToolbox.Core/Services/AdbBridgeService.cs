@@ -5,7 +5,8 @@ namespace DevToolbox.Core.Services;
 
 /// <summary>
 /// Executes ADB commands from Desktop to provision permissions (appops SYSTEM_ALERT_WINDOW),
-/// force screen orientation changes, and configure reverse proxy port forwarding on connected Android devices.
+/// force screen orientation changes, configure reverse proxy port forwarding, push MITM certificates,
+/// and query properties on connected Android devices.
 /// </summary>
 public sealed class AdbBridgeService : IAdbBridgeService
 {
@@ -161,6 +162,62 @@ public sealed class AdbBridgeService : IAdbBridgeService
         return RunAdbCommandAsync(
             $"{prefix}shell am start -W -a android.intent.action.VIEW -d \"{deepLinkUri}\"{packageArg}",
             cancellationToken);
+    }
+
+    public Task<AdbCommandResult> PushRootCertificateToDeviceAsync(
+        string localCerFilePath,
+        string? deviceSerial = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(localCerFilePath);
+
+        var prefix = BuildDevicePrefix(deviceSerial);
+        return RunAdbCommandAsync(
+            $"{prefix}push \"{localCerFilePath}\" /sdcard/Download/DevToolboxRootCA.cer",
+            cancellationToken);
+    }
+
+    public async Task<IReadOnlyDictionary<string, string>> GetAndroidDevicePropertiesAsync(
+        string? deviceSerial = null,
+        CancellationToken cancellationToken = default)
+    {
+        var prefix = BuildDevicePrefix(deviceSerial);
+        var props = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        var keys = new (string Label, string PropName)[]
+        {
+            ("Manufacturer", "ro.product.manufacturer"),
+            ("Model", "ro.product.model"),
+            ("Android Version", "ro.build.version.release"),
+            ("SDK API Level", "ro.build.version.sdk"),
+            ("ABI Architecture", "ro.product.cpu.abi"),
+            ("Security Patch", "ro.build.version.security_patch"),
+            ("Build Fingerprint", "ro.build.fingerprint")
+        };
+
+        foreach (var (label, propName) in keys)
+        {
+            var res = await RunAdbCommandAsync($"{prefix}shell getprop {propName}", cancellationToken)
+                .ConfigureAwait(false);
+            if (res.Success && !string.IsNullOrWhiteSpace(res.StandardOutput))
+            {
+                props[label] = res.StandardOutput.Trim();
+            }
+        }
+
+        var wmSize = await RunAdbCommandAsync($"{prefix}shell wm size", cancellationToken).ConfigureAwait(false);
+        if (wmSize.Success && !string.IsNullOrWhiteSpace(wmSize.StandardOutput))
+        {
+            props["Display Size (wm size)"] = wmSize.StandardOutput.Replace('\r', ' ').Replace('\n', ' ').Trim();
+        }
+
+        var wmDensity = await RunAdbCommandAsync($"{prefix}shell wm density", cancellationToken).ConfigureAwait(false);
+        if (wmDensity.Success && !string.IsNullOrWhiteSpace(wmDensity.StandardOutput))
+        {
+            props["Display Density (wm density)"] = wmDensity.StandardOutput.Replace('\r', ' ').Replace('\n', ' ').Trim();
+        }
+
+        return props;
     }
 
     private static string BuildDevicePrefix(string? serial) =>

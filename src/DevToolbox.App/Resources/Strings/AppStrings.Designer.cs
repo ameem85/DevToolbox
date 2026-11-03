@@ -22,6 +22,9 @@ public static class AppStrings
     public static string Nav_FloatingOverlay => GetString(nameof(Nav_FloatingOverlay));
     public static string Nav_NetworkProxy => GetString(nameof(Nav_NetworkProxy));
     public static string Nav_OrientationHelper => GetString(nameof(Nav_OrientationHelper));
+    public static string Nav_LogcatReader => GetString(nameof(Nav_LogcatReader));
+    public static string Nav_DeviceInspector => GetString(nameof(Nav_DeviceInspector));
+    public static string Nav_DeepLinkTester => GetString(nameof(Nav_DeepLinkTester));
 
     public static string Dashboard_HeaderTitle => GetString(nameof(Dashboard_HeaderTitle));
     public static string Dashboard_HeaderSubtitle => GetString(nameof(Dashboard_HeaderSubtitle));
@@ -64,6 +67,8 @@ public static class AppStrings
     public static string Proxy_StartButton => GetString(nameof(Proxy_StartButton));
     public static string Proxy_StopButton => GetString(nameof(Proxy_StopButton));
     public static string Proxy_AdbReverseButton => GetString(nameof(Proxy_AdbReverseButton));
+    public static string Proxy_ExportRootCaButton => GetString(nameof(Proxy_ExportRootCaButton));
+    public static string Proxy_PushRootCaAdbButton => GetString(nameof(Proxy_PushRootCaAdbButton));
     public static string Proxy_TestSimulatorSectionTitle => GetString(nameof(Proxy_TestSimulatorSectionTitle));
     public static string Proxy_SimulateProfileButton => GetString(nameof(Proxy_SimulateProfileButton));
     public static string Proxy_SimulateCheckoutButton => GetString(nameof(Proxy_SimulateCheckoutButton));
@@ -95,10 +100,38 @@ public static class AppStrings
     public static string Orientation_PresetTabletButton => GetString(nameof(Orientation_PresetTabletButton));
     public static string Orientation_ResetDisplayButton => GetString(nameof(Orientation_ResetDisplayButton));
 
+    public static string Logcat_PageTitle => GetString(nameof(Logcat_PageTitle));
+    public static string Logcat_StreamControlsSection => GetString(nameof(Logcat_StreamControlsSection));
+    public static string Logcat_StartStreamButton => GetString(nameof(Logcat_StartStreamButton));
+    public static string Logcat_StopStreamButton => GetString(nameof(Logcat_StopStreamButton));
+    public static string Logcat_EmitMarkerButton => GetString(nameof(Logcat_EmitMarkerButton));
+    public static string Logcat_ClearBufferButton => GetString(nameof(Logcat_ClearBufferButton));
+    public static string Logcat_TagFilterPlaceholder => GetString(nameof(Logcat_TagFilterPlaceholder));
+    public static string Logcat_SearchPlaceholder => GetString(nameof(Logcat_SearchPlaceholder));
+    public static string Logcat_LiveFeedHeader => GetString(nameof(Logcat_LiveFeedHeader));
+
+    public static string Inspector_PageTitle => GetString(nameof(Inspector_PageTitle));
+    public static string Inspector_ControlsSectionTitle => GetString(nameof(Inspector_ControlsSectionTitle));
+    public static string Inspector_RefreshButton => GetString(nameof(Inspector_RefreshButton));
+    public static string Inspector_CopyReportButton => GetString(nameof(Inspector_CopyReportButton));
+    public static string Inspector_SearchPlaceholder => GetString(nameof(Inspector_SearchPlaceholder));
+    public static string Inspector_PropertiesHeader => GetString(nameof(Inspector_PropertiesHeader));
+
+    public static string DeepLink_PageTitle => GetString(nameof(DeepLink_PageTitle));
+    public static string DeepLink_DispatchSectionTitle => GetString(nameof(DeepLink_DispatchSectionTitle));
+    public static string DeepLink_UriPlaceholder => GetString(nameof(DeepLink_UriPlaceholder));
+    public static string DeepLink_PackagePlaceholder => GetString(nameof(DeepLink_PackagePlaceholder));
+    public static string DeepLink_UseAdbLabel => GetString(nameof(DeepLink_UseAdbLabel));
+    public static string DeepLink_LaunchButton => GetString(nameof(DeepLink_LaunchButton));
+    public static string DeepLink_SavePresetButton => GetString(nameof(DeepLink_SavePresetButton));
+    public static string DeepLink_PresetsHeader => GetString(nameof(DeepLink_PresetsHeader));
+    public static string DeepLink_HistoryHeader => GetString(nameof(DeepLink_HistoryHeader));
+
     public static string QuickAction_HideOverlay => GetString(nameof(QuickAction_HideOverlay));
     public static string QuickAction_ToggleProxy => GetString(nameof(QuickAction_ToggleProxy));
     public static string QuickAction_ForcePortrait => GetString(nameof(QuickAction_ForcePortrait));
     public static string QuickAction_ForceLandscape => GetString(nameof(QuickAction_ForceLandscape));
     public static string QuickAction_CycleOrientation => GetString(nameof(QuickAction_CycleOrientation));
+    public static string QuickAction_EmitLogMarker => GetString(nameof(QuickAction_EmitLogMarker));
     public static string Hud_FloatingTitle => GetString(nameof(Hud_FloatingTitle));
 }

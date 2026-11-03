@@ -57,6 +57,15 @@
   <data name="Nav_OrientationHelper" xml:space="preserve">
     <value>Orientation &amp; State</value>
   </data>
+  <data name="Nav_LogcatReader" xml:space="preserve">
+    <value>Logcat &amp; Stream</value>
+  </data>
+  <data name="Nav_DeviceInspector" xml:space="preserve">
+    <value>Device Inspector</value>
+  </data>
+  <data name="Nav_DeepLinkTester" xml:space="preserve">
+    <value>Deep-Link Tester</value>
+  </data>
   <data name="Dashboard_HeaderTitle" xml:space="preserve">
     <value>Developer Companion Workbench</value>
   </data>
@@ -91,7 +100,7 @@
     <value>Network Proxy &amp; Mocking Tool</value>
   </data>
   <data name="Module_NetworkProxy_Description" xml:space="preserve">
-    <value>Local HTTP/HTTPS interceptor with Map Local payloads, header/URL rewrites, latency, and fault injection rules.</value>
+    <value>Local HTTP/HTTPS MITM interceptor with Map Local payloads, header/URL rewrites, latency, and fault injection rules.</value>
   </data>
   <data name="Module_OrientationHelper_Title" xml:space="preserve">
     <value>Orientation &amp; State Helper</value>
@@ -103,19 +112,19 @@
     <value>Logcat &amp; Unified Stream Reader</value>
   </data>
   <data name="Module_LogcatReader_Description" xml:space="preserve">
-    <value>Plug-and-play module template for high-frequency device log streaming and tag filtering.</value>
+    <value>Real-time high-frequency Android ADB logcat and diagnostic stream reader with level and tag filtering.</value>
   </data>
   <data name="Module_DeviceInspector_Title" xml:space="preserve">
     <value>Device &amp; Environment Inspector</value>
   </data>
   <data name="Module_DeviceInspector_Description" xml:space="preserve">
-    <value>Plug-and-play module template for inspecting runtime hardware, ABI, display density, and OS capabilities.</value>
+    <value>Live hardware, OS, ABI, memory, network interface, and Android system property inspector with report export.</value>
   </data>
   <data name="Module_DeepLinkTester_Title" xml:space="preserve">
     <value>Deep-Link &amp; Intent Dispatcher</value>
   </data>
   <data name="Module_DeepLinkTester_Description" xml:space="preserve">
-    <value>Plug-and-play module template for testing custom URI schemes and App Links locally or via ADB.</value>
+    <value>Interactive custom URI scheme and Universal / App Link launcher supporting local execution and ADB am start.</value>
   </data>
   <data name="Overlay_PageTitle" xml:space="preserve">
     <value>Floating Widget / Overlay Engine</value>
@@ -157,7 +166,7 @@
     <value>Network Proxy &amp; Mocking Engine</value>
   </data>
   <data name="Proxy_ListenerSectionTitle" xml:space="preserve">
-    <value>Embedded HTTP/HTTPS Proxy Listener &amp; ADB Reverse Tunnel</value>
+    <value>Embedded HTTP/HTTPS MITM Proxy Listener &amp; Root CA</value>
   </data>
   <data name="Proxy_PortLabel" xml:space="preserve">
     <value>Listen Port</value>
@@ -169,7 +178,13 @@
     <value>Stop Proxy Server</value>
   </data>
   <data name="Proxy_AdbReverseButton" xml:space="preserve">
-    <value>Bind ADB Reverse Tunnel (tcp:8888)</value>
+    <value>Bind ADB Reverse (tcp:8888)</value>
+  </data>
+  <data name="Proxy_ExportRootCaButton" xml:space="preserve">
+    <value>Export HTTPS Root CA (.cer/.pem)</value>
+  </data>
+  <data name="Proxy_PushRootCaAdbButton" xml:space="preserve">
+    <value>Push Root CA to Android via ADB</value>
   </data>
   <data name="Proxy_TestSimulatorSectionTitle" xml:space="preserve">
     <value>Interactive Traffic &amp; Rule Simulator</value>
@@ -258,6 +273,78 @@
   <data name="Orientation_ResetDisplayButton" xml:space="preserve">
     <value>Reset Display Override</value>
   </data>
+  <data name="Logcat_PageTitle" xml:space="preserve">
+    <value>Logcat &amp; Unified Stream Reader</value>
+  </data>
+  <data name="Logcat_StreamControlsSection" xml:space="preserve">
+    <value>Real-Time Stream Controls &amp; Filters</value>
+  </data>
+  <data name="Logcat_StartStreamButton" xml:space="preserve">
+    <value>Start Log Stream</value>
+  </data>
+  <data name="Logcat_StopStreamButton" xml:space="preserve">
+    <value>Stop Log Stream</value>
+  </data>
+  <data name="Logcat_EmitMarkerButton" xml:space="preserve">
+    <value>Emit QA Checkpoint</value>
+  </data>
+  <data name="Logcat_ClearBufferButton" xml:space="preserve">
+    <value>Clear Buffer</value>
+  </data>
+  <data name="Logcat_TagFilterPlaceholder" xml:space="preserve">
+    <value>Tag Filter (e.g. ActivityManager or DevToolbox)</value>
+  </data>
+  <data name="Logcat_SearchPlaceholder" xml:space="preserve">
+    <value>Search log message text...</value>
+  </data>
+  <data name="Logcat_LiveFeedHeader" xml:space="preserve">
+    <value>Live Logcat &amp; Diagnostic Feed (Direct IoC Stream)</value>
+  </data>
+  <data name="Inspector_PageTitle" xml:space="preserve">
+    <value>Device &amp; Environment Inspector</value>
+  </data>
+  <data name="Inspector_ControlsSectionTitle" xml:space="preserve">
+    <value>Runtime, Hardware, Network &amp; Android ADB Telemetry</value>
+  </data>
+  <data name="Inspector_RefreshButton" xml:space="preserve">
+    <value>Capture / Refresh Telemetry</value>
+  </data>
+  <data name="Inspector_CopyReportButton" xml:space="preserve">
+    <value>Copy Markdown Report to Clipboard</value>
+  </data>
+  <data name="Inspector_SearchPlaceholder" xml:space="preserve">
+    <value>Filter properties by category, key, or value...</value>
+  </data>
+  <data name="Inspector_PropertiesHeader" xml:space="preserve">
+    <value>Captured System &amp; Device Properties</value>
+  </data>
+  <data name="DeepLink_PageTitle" xml:space="preserve">
+    <value>Deep-Link &amp; Intent Dispatcher</value>
+  </data>
+  <data name="DeepLink_DispatchSectionTitle" xml:space="preserve">
+    <value>URI Scheme &amp; Universal Link Launcher</value>
+  </data>
+  <data name="DeepLink_UriPlaceholder" xml:space="preserve">
+    <value>Enter URI (e.g. devtoolbox://inspect/session or https://example.com/item/42)</value>
+  </data>
+  <data name="DeepLink_PackagePlaceholder" xml:space="preserve">
+    <value>Optional Android Package (e.g. com.devtoolbox.companion)</value>
+  </data>
+  <data name="DeepLink_UseAdbLabel" xml:space="preserve">
+    <value>Dispatch to connected Android device via ADB (am start -W -a VIEW)</value>
+  </data>
+  <data name="DeepLink_LaunchButton" xml:space="preserve">
+    <value>Fire Deep-Link</value>
+  </data>
+  <data name="DeepLink_SavePresetButton" xml:space="preserve">
+    <value>Save as Preset</value>
+  </data>
+  <data name="DeepLink_PresetsHeader" xml:space="preserve">
+    <value>Saved QA Deep-Link Presets</value>
+  </data>
+  <data name="DeepLink_HistoryHeader" xml:space="preserve">
+    <value>Recent Dispatch Execution Log</value>
+  </data>
   <data name="QuickAction_HideOverlay" xml:space="preserve">
     <value>Hide Overlay</value>
   </data>
@@ -272,6 +359,9 @@
   </data>
   <data name="QuickAction_CycleOrientation" xml:space="preserve">
     <value>Cycle Orientation</value>
+  </data>
+  <data name="QuickAction_EmitLogMarker" xml:space="preserve">
+    <value>Log QA Marker</value>
   </data>
   <data name="Hud_FloatingTitle" xml:space="preserve">
     <value>DevToolbox HUD</value>

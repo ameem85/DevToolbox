@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="DevToolbox.App.Views.LogcatToolPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:modules="clr-namespace:DevToolbox.Core.Modules;assembly=DevToolbox.Core"
+    xmlns:strings="clr-namespace:DevToolbox.App.Resources.Strings"
+    xmlns:vm="clr-namespace:DevToolbox.App.ViewModels"
+    Title="{x:Static strings:AppStrings.Logcat_PageTitle}"
+    x:DataType="vm:LogcatToolViewModel"
+    AutomationId="LogcatTool_Page"
+    BackgroundColor="#0F172A">
+
+    <ScrollView AutomationId="LogcatTool_ScrollView">
+        <VerticalStackLayout
+            Padding="20, 16"
+            Spacing="16">
+
+            <Border
+                Padding="16, 14"
+                BackgroundColor="#1E293B"
+                Stroke="#334155"
+                StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout Spacing="10">
+                    <Label
+                        AutomationId="LogcatTool_ControlsHeaderLabel"
+                        FontAttributes="Bold"
+                        FontSize="17"
+                        Text="{x:Static strings:AppStrings.Logcat_StreamControlsSection}"
+                        TextColor="#F8FAFC" />
+
+                    <Label
+                        AutomationId="LogcatTool_StatusBadgeLabel"
+                        FontAttributes="Bold"
+                        FontSize="13"
+                        Text="{Binding StreamStatusBadge}"
+                        TextColor="#34D399" />
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Button
+                            AutomationId="LogcatTool_StartStreamButton"
+                            BackgroundColor="#059669"
+                            Command="{Binding StartStreamCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Logcat_StartStreamButton}"
+                            TextColor="White" />
+                        <Button
+                            AutomationId="LogcatTool_StopStreamButton"
+                            BackgroundColor="#DC2626"
+                            Command="{Binding StopStreamCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Logcat_StopStreamButton}"
+                            TextColor="White" />
+                        <Button
+                            AutomationId="LogcatTool_EmitMarkerButton"
+                            BackgroundColor="#0284C7"
+                            Command="{Binding EmitMarkerCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Logcat_EmitMarkerButton}"
+                            TextColor="White" />
+                        <Button
+                            AutomationId="LogcatTool_ClearBufferButton"
+                            BackgroundColor="#334155"
+                            Command="{Binding ClearBufferCommand}"
+                            CornerRadius="8"
+                            Text="{x:Static strings:AppStrings.Logcat_ClearBufferButton}"
+                            TextColor="#E2E8F0" />
+                    </HorizontalStackLayout>
+
+                    <Grid
+                        ColumnDefinitions="Auto, *, *"
+                        ColumnSpacing="10">
+                        <Picker
+                            Grid.Column="0"
+                            WidthRequest="110"
+                            AutomationId="LogcatTool_LevelPicker"
+                            BackgroundColor="#0F172A"
+                            ItemsSource="{Binding AvailableLevels}"
+                            SelectedItem="{Binding SelectedLevel}"
+                            TextColor="#F8FAFC" />
+                        <Entry
+                            Grid.Column="1"
+                            AutomationId="LogcatTool_TagFilterEntry"
+                            BackgroundColor="#0F172A"
+                            Placeholder="{x:Static strings:AppStrings.Logcat_TagFilterPlaceholder}"
+                            PlaceholderColor="#64748B"
+                            Text="{Binding TagFilter}"
+                            TextColor="#F8FAFC" />
+                        <Entry
+                            Grid.Column="2"
+                            AutomationId="LogcatTool_SearchEntry"
+                            BackgroundColor="#0F172A"
+                            Placeholder="{x:Static strings:AppStrings.Logcat_SearchPlaceholder}"
+                            PlaceholderColor="#64748B"
+                            Text="{Binding SearchQuery}"
+                            TextColor="#F8FAFC" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Label
+                AutomationId="LogcatTool_LiveFeedHeaderLabel"
+                FontAttributes="Bold"
+                FontSize="16"
+                Text="{x:Static strings:AppStrings.Logcat_LiveFeedHeader}"
+                TextColor="#E2E8F0" />
+
+            <CollectionView
+                AutomationId="LogcatTool_EntriesCollectionView"
+                ItemsSource="{Binding FilteredEntries}"
+                SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout
+                        ItemSpacing="6"
+                        Orientation="Vertical" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="modules:LogcatEntryRecord">
+                        <Border
+                            Padding="12, 8"
+                            BackgroundColor="#1E293B"
+                            Stroke="#334155"
+                            StrokeShape="RoundRectangle 6">
+                            <VerticalStackLayout Spacing="2">
+                                <HorizontalStackLayout Spacing="8">
+                                    <Label
+                                        AutomationId="LogcatTool_EntryTimestampLabel"
+                                        FontSize="11"
+                                        Text="{Binding FormattedTimestamp}"
+                                        TextColor="#64748B" />
+                                    <Label
+                                        AutomationId="LogcatTool_EntryHeaderLabel"
+                                        FontAttributes="Bold"
+                                        FontSize="12"
+                                        Text="{Binding HeaderSummary}"
+                                        TextColor="#38BDF8" />
+                                </HorizontalStackLayout>
+                                <Label
+                                    AutomationId="LogcatTool_EntryMessageLabel"
+                                    FontSize="12"
+                                    Text="{Binding Message}"
+                                    TextColor="#F8FAFC" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
