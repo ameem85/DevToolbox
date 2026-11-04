@@ -8,189 +8,447 @@
     Title="{x:Static strings:AppStrings.Nav_Dashboard}"
     x:DataType="vm:DashboardViewModel"
     AutomationId="Dashboard_Page"
-    BackgroundColor="#0F172A">
+    BackgroundColor="#060A12"
+    Shell.NavBarIsVisible="False">
 
-    <ScrollView AutomationId="Dashboard_MainScrollView">
-        <VerticalStackLayout
-            Padding="20, 16"
-            Spacing="16">
+    <Grid RowDefinitions="Auto, *">
+        <!-- Studio Top Command Bar -->
+        <Border
+            Grid.Row="0"
+            Padding="16, 10"
+            BackgroundColor="#0B1120"
+            Stroke="#1E293B"
+            StrokeShape="RoundRectangle 0"
+            StrokeThickness="0,0,0,1">
+            <Grid
+                ColumnDefinitions="Auto, *, Auto"
+                ColumnSpacing="12">
+                <HorizontalStackLayout
+                    Grid.Column="0"
+                    Spacing="10"
+                    VerticalOptions="Center">
+                    <Border
+                        Padding="8, 4"
+                        BackgroundColor="#0284C7"
+                        Stroke="#38BDF8"
+                        StrokeShape="RoundRectangle 8">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="13"
+                            Text="⚡"
+                            TextColor="White" />
+                    </Border>
+                    <VerticalStackLayout
+                        Spacing="1"
+                        VerticalOptions="Center">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label
+                                AutomationId="Dashboard_HeaderTitleLabel"
+                                FontAttributes="Bold"
+                                FontSize="15"
+                                Text="DEVTOOLBOX STUDIO"
+                                TextColor="#F8FAFC" />
+                            <Border
+                                Padding="6, 1"
+                                BackgroundColor="#070B14"
+                                Stroke="#0284C7"
+                                StrokeShape="RoundRectangle 6"
+                                VerticalOptions="Center">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontFamily="monospace"
+                                    FontSize="9.5"
+                                    Text="v1.0 PRO • .NET 10"
+                                    TextColor="#38BDF8" />
+                            </Border>
+                        </HorizontalStackLayout>
+                        <Label
+                            AutomationId="Dashboard_HeaderSubtitleLabel"
+                            FontSize="11"
+                            Text="{x:Static strings:AppStrings.Dashboard_HeaderSubtitle}"
+                            TextColor="#94A3B8" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
 
-            <Border
-                Padding="18, 16"
-                BackgroundColor="#1E293B"
-                Stroke="#334155"
-                StrokeShape="RoundRectangle 12">
-                <VerticalStackLayout Spacing="8">
-                    <Label
-                        AutomationId="Dashboard_HeaderTitleLabel"
-                        FontAttributes="Bold"
-                        FontSize="22"
-                        Text="{x:Static strings:AppStrings.Dashboard_HeaderTitle}"
-                        TextColor="#F8FAFC" />
-                    <Label
-                        AutomationId="Dashboard_HeaderSubtitleLabel"
-                        FontSize="13"
-                        Text="{x:Static strings:AppStrings.Dashboard_HeaderSubtitle}"
-                        TextColor="#94A3B8" />
+                <HorizontalStackLayout
+                    Grid.Column="2"
+                    Spacing="8"
+                    VerticalOptions="Center">
+                    <Button
+                        AutomationId="Dashboard_LaunchGearButton"
+                        BackgroundColor="#162033"
+                        BorderColor="#38BDF8"
+                        BorderWidth="1"
+                        Command="{Binding LaunchGearOverlayCommand}"
+                        Text="⚙ Gear Bubble"
+                        TextColor="#38BDF8" />
+                    <Button
+                        AutomationId="Dashboard_LaunchExpandedButton"
+                        BackgroundColor="#0284C7"
+                        Command="{Binding LaunchExpandedOverlayCommand}"
+                        Text="⊞ Expand HUD"
+                        TextColor="White" />
+                    <Button
+                        AutomationId="Dashboard_FloatOverOsButton"
+                        BackgroundColor="#4F46E5"
+                        Command="{Binding FloatOverOsCommand}"
+                        Text="⤡ Float Over OS"
+                        TextColor="White" />
+                </HorizontalStackLayout>
+            </Grid>
+        </Border>
 
-                    <Grid
-                        Margin="0, 8, 0, 0"
-                        ColumnDefinitions="*, *, *"
-                        ColumnSpacing="10">
-                        <Border
-                            Grid.Column="0"
-                            Padding="12, 10"
-                            BackgroundColor="#0F172A"
-                            Stroke="#38BDF8"
-                            StrokeShape="RoundRectangle 8">
+        <!-- Main Workbench Scroll Canvas -->
+        <ScrollView
+            Grid.Row="1"
+            AutomationId="Dashboard_MainScrollView">
+            <VerticalStackLayout
+                Padding="16, 12"
+                Spacing="14">
+
+                <!-- 4-Column Live Telemetry KPI Strip -->
+                <Grid
+                    ColumnDefinitions="*, *, *, *"
+                    ColumnSpacing="10">
+
+                    <!-- KPI 1: Floating Overlay Engine -->
+                    <Border
+                        Grid.Column="0"
+                        Padding="12, 10"
+                        BackgroundColor="#0F172A"
+                        Stroke="#1E293B"
+                        StrokeShape="RoundRectangle 10">
+                        <VerticalStackLayout Spacing="6">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="10"
+                                    Text="⚙ OVERLAY HUD"
+                                    TextColor="#94A3B8"
+                                    VerticalOptions="Center" />
+                                <Border
+                                    Grid.Column="1"
+                                    Padding="6, 2"
+                                    BackgroundColor="#070B14"
+                                    Stroke="#0284C7"
+                                    StrokeShape="RoundRectangle 6">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontFamily="monospace"
+                                        FontSize="9.5"
+                                        Text="{Binding OverlayStateBadge}"
+                                        TextColor="#38BDF8" />
+                                </Border>
+                            </Grid>
                             <Label
                                 AutomationId="Dashboard_OverlaySummaryLabel"
-                                FontSize="12"
+                                FontAttributes="Bold"
+                                FontFamily="monospace"
+                                FontSize="11"
+                                LineBreakMode="TailTruncation"
                                 Text="{Binding OverlaySummary}"
+                                TextColor="#F8FAFC" />
+                            <Button
+                                AutomationId="Dashboard_QuickToggleOverlayButton"
+                                BackgroundColor="#162033"
+                                BorderColor="#0284C7"
+                                BorderWidth="1"
+                                Command="{Binding QuickToggleOverlayCommand}"
+                                HeightRequest="30"
+                                MinimumHeightRequest="30"
+                                Padding="8, 4"
+                                Text="⚙ Toggle Gear HUD"
                                 TextColor="#38BDF8" />
-                        </Border>
-                        <Border
-                            Grid.Column="1"
-                            Padding="12, 10"
-                            BackgroundColor="#0F172A"
-                            Stroke="#34D399"
-                            StrokeShape="RoundRectangle 8">
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- KPI 2: MITM Network Proxy -->
+                    <Border
+                        Grid.Column="1"
+                        Padding="12, 10"
+                        BackgroundColor="#0F172A"
+                        Stroke="#1E293B"
+                        StrokeShape="RoundRectangle 10">
+                        <VerticalStackLayout Spacing="6">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="10"
+                                    Text="🌐 MITM PROXY"
+                                    TextColor="#94A3B8"
+                                    VerticalOptions="Center" />
+                                <Border
+                                    Grid.Column="1"
+                                    Padding="6, 2"
+                                    BackgroundColor="#070B14"
+                                    Stroke="#059669"
+                                    StrokeShape="RoundRectangle 6">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontFamily="monospace"
+                                        FontSize="9.5"
+                                        Text="{Binding ProxyStateBadge}"
+                                        TextColor="#34D399" />
+                                </Border>
+                            </Grid>
                             <Label
                                 AutomationId="Dashboard_ProxySummaryLabel"
-                                FontSize="12"
+                                FontAttributes="Bold"
+                                FontFamily="monospace"
+                                FontSize="11"
+                                LineBreakMode="TailTruncation"
                                 Text="{Binding ProxySummary}"
+                                TextColor="#F8FAFC" />
+                            <Button
+                                AutomationId="Dashboard_QuickToggleProxyButton"
+                                BackgroundColor="#162033"
+                                BorderColor="#059669"
+                                BorderWidth="1"
+                                Command="{Binding QuickToggleProxyCommand}"
+                                HeightRequest="30"
+                                MinimumHeightRequest="30"
+                                Padding="8, 4"
+                                Text="⇄ Start / Stop Proxy"
                                 TextColor="#34D399" />
-                        </Border>
-                        <Border
-                            Grid.Column="2"
-                            Padding="12, 10"
-                            BackgroundColor="#0F172A"
-                            Stroke="#FBBF24"
-                            StrokeShape="RoundRectangle 8">
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- KPI 3: Device Orientation & State -->
+                    <Border
+                        Grid.Column="2"
+                        Padding="12, 10"
+                        BackgroundColor="#0F172A"
+                        Stroke="#1E293B"
+                        StrokeShape="RoundRectangle 10">
+                        <VerticalStackLayout Spacing="6">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="10"
+                                    Text="🔄 ORIENTATION"
+                                    TextColor="#94A3B8"
+                                    VerticalOptions="Center" />
+                                <Border
+                                    Grid.Column="1"
+                                    Padding="6, 2"
+                                    BackgroundColor="#070B14"
+                                    Stroke="#D97706"
+                                    StrokeShape="RoundRectangle 6">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontFamily="monospace"
+                                        FontSize="9.5"
+                                        Text="{Binding OrientationStateBadge}"
+                                        TextColor="#FBBF24" />
+                                </Border>
+                            </Grid>
                             <Label
                                 AutomationId="Dashboard_OrientationSummaryLabel"
-                                FontSize="12"
+                                FontAttributes="Bold"
+                                FontFamily="monospace"
+                                FontSize="11"
+                                LineBreakMode="TailTruncation"
                                 Text="{Binding OrientationSummary}"
+                                TextColor="#F8FAFC" />
+                            <Button
+                                AutomationId="Dashboard_QuickCycleOrientationButton"
+                                BackgroundColor="#162033"
+                                BorderColor="#D97706"
+                                BorderWidth="1"
+                                Command="{Binding QuickCycleOrientationCommand}"
+                                HeightRequest="30"
+                                MinimumHeightRequest="30"
+                                Padding="8, 4"
+                                Text="🔄 Rotate 90°"
                                 TextColor="#FBBF24" />
-                        </Border>
-                    </Grid>
+                        </VerticalStackLayout>
+                    </Border>
 
-                    <HorizontalStackLayout
-                        Margin="0, 8, 0, 0"
-                        Spacing="10">
-                        <Button
-                            AutomationId="Dashboard_QuickToggleOverlayButton"
-                            BackgroundColor="#0284C7"
-                            Command="{Binding QuickToggleOverlayCommand}"
-                            CornerRadius="8"
-                            Text="{x:Static strings:AppStrings.Dashboard_QuickLaunchOverlay}"
-                            TextColor="White" />
-                        <Button
-                            AutomationId="Dashboard_QuickToggleProxyButton"
-                            BackgroundColor="#059669"
-                            Command="{Binding QuickToggleProxyCommand}"
-                            CornerRadius="8"
-                            Text="{x:Static strings:AppStrings.Dashboard_QuickToggleProxy}"
-                            TextColor="White" />
-                        <Button
-                            AutomationId="Dashboard_QuickCycleOrientationButton"
-                            BackgroundColor="#D97706"
-                            Command="{Binding QuickCycleOrientationCommand}"
-                            CornerRadius="8"
-                            Text="{x:Static strings:AppStrings.Dashboard_QuickCycleOrientation}"
-                            TextColor="White" />
-                    </HorizontalStackLayout>
-                </VerticalStackLayout>
-            </Border>
-
-            <Label
-                AutomationId="Dashboard_ModulesSectionHeaderLabel"
-                FontAttributes="Bold"
-                FontSize="17"
-                Text="{x:Static strings:AppStrings.Dashboard_RegisteredModulesHeader}"
-                TextColor="#E2E8F0" />
-
-            <CollectionView
-                AutomationId="Dashboard_ModulesCollectionView"
-                ItemsSource="{Binding Modules}"
-                SelectionMode="None">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout
-                        ItemSpacing="12"
-                        Orientation="Vertical" />
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="vm:ToolModuleCardItem">
-                        <Border
-                            Padding="16, 14"
-                            BackgroundColor="#1E293B"
-                            Stroke="#334155"
-                            StrokeShape="RoundRectangle 10">
-                            <Grid
-                                ColumnDefinitions="Auto, *, Auto"
-                                ColumnSpacing="14">
+                    <!-- KPI 4: Logcat & Diagnostic Stream -->
+                    <Border
+                        Grid.Column="3"
+                        Padding="12, 10"
+                        BackgroundColor="#0F172A"
+                        Stroke="#1E293B"
+                        StrokeShape="RoundRectangle 10">
+                        <VerticalStackLayout Spacing="6">
+                            <Grid ColumnDefinitions="*, Auto">
                                 <Label
-                                    Grid.Column="0"
-                                    AutomationId="Dashboard_ModuleCardIconLabel"
-                                    FontSize="28"
-                                    Text="{Binding IconGlyph}"
+                                    FontAttributes="Bold"
+                                    FontSize="10"
+                                    Text="📜 LOG STREAM"
+                                    TextColor="#94A3B8"
                                     VerticalOptions="Center" />
-
-                                <VerticalStackLayout
+                                <Border
                                     Grid.Column="1"
-                                    Spacing="4">
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Label
-                                            AutomationId="Dashboard_ModuleCardTitleLabel"
-                                            FontAttributes="Bold"
-                                            FontSize="16"
-                                            Text="{Binding Title}"
-                                            TextColor="#F8FAFC" />
-                                        <Label
-                                            AutomationId="Dashboard_ModuleCardStatusBadgeLabel"
-                                            FontAttributes="Bold"
-                                            FontSize="11"
-                                            Text="{Binding StatusText}"
-                                            TextColor="#38BDF8"
-                                            VerticalOptions="Center" />
-                                    </HorizontalStackLayout>
+                                    Padding="6, 2"
+                                    BackgroundColor="#070B14"
+                                    Stroke="#4F46E5"
+                                    StrokeShape="RoundRectangle 6">
                                     <Label
-                                        AutomationId="Dashboard_ModuleCardDescriptionLabel"
-                                        FontSize="13"
-                                        Text="{Binding Description}"
-                                        TextColor="#94A3B8" />
-                                    <Label
-                                        AutomationId="Dashboard_ModuleCardCategoryLabel"
-                                        FontSize="11"
-                                        Text="{Binding CategoryBadge}"
-                                        TextColor="#64748B" />
-                                </VerticalStackLayout>
-
-                                <HorizontalStackLayout
-                                    Grid.Column="2"
-                                    Spacing="8"
-                                    VerticalOptions="Center">
-                                    <Button
-                                        AutomationId="Dashboard_ModuleCardToggleButton"
-                                        BackgroundColor="#334155"
-                                        Command="{Binding ToggleCommand}"
-                                        CornerRadius="8"
-                                        Text="{x:Static strings:AppStrings.Dashboard_ToggleModuleButton}"
-                                        TextColor="#E2E8F0" />
-                                    <Button
-                                        AutomationId="Dashboard_ModuleCardOpenButton"
-                                        BackgroundColor="#2563EB"
-                                        Command="{Binding OpenCommand}"
-                                        CornerRadius="8"
-                                        Text="{x:Static strings:AppStrings.Dashboard_OpenModuleButton}"
-                                        TextColor="White" />
-                                </HorizontalStackLayout>
+                                        FontAttributes="Bold"
+                                        FontFamily="monospace"
+                                        FontSize="9.5"
+                                        Text="{Binding LogcatStateBadge}"
+                                        TextColor="#818CF8" />
+                                </Border>
                             </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                            <Label
+                                FontAttributes="Bold"
+                                FontFamily="monospace"
+                                FontSize="11"
+                                LineBreakMode="TailTruncation"
+                                Text="{Binding LogcatSummary}"
+                                TextColor="#F8FAFC" />
+                            <Button
+                                BackgroundColor="#162033"
+                                BorderColor="#4F46E5"
+                                BorderWidth="1"
+                                Command="{Binding QuickEmitMarkerCommand}"
+                                HeightRequest="30"
+                                MinimumHeightRequest="30"
+                                Padding="8, 4"
+                                Text="📌 Emit QA Marker"
+                                TextColor="#818CF8" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
 
-        </VerticalStackLayout>
-    </ScrollView>
+                <!-- Section Header -->
+                <Grid ColumnDefinitions="Auto, *, Auto">
+                    <Label
+                        Grid.Column="0"
+                        AutomationId="Dashboard_ModulesSectionHeaderLabel"
+                        FontAttributes="Bold"
+                        FontSize="13"
+                        Text="REGISTERED PLUG-AND-PLAY MODULES"
+                        TextColor="#94A3B8"
+                        VerticalOptions="Center" />
+                    <Border
+                        Grid.Column="2"
+                        Padding="8, 3"
+                        BackgroundColor="#0B1120"
+                        Stroke="#1E293B"
+                        StrokeShape="RoundRectangle 6">
+                        <Label
+                            FontAttributes="Bold"
+                            FontFamily="monospace"
+                            FontSize="10"
+                            Text="6 MODULES LOADED • IOC STREAM READY"
+                            TextColor="#64748B" />
+                    </Border>
+                </Grid>
+
+                <!-- Registered Modules List -->
+                <CollectionView
+                    AutomationId="Dashboard_ModulesCollectionView"
+                    ItemsSource="{Binding Modules}"
+                    SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout
+                            ItemSpacing="8"
+                            Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ToolModuleCardItem">
+                            <Border
+                                Padding="12, 10"
+                                BackgroundColor="#0F172A"
+                                Stroke="#1E293B"
+                                StrokeShape="RoundRectangle 10">
+                                <Grid
+                                    ColumnDefinitions="Auto, *, Auto"
+                                    ColumnSpacing="12">
+                                    <Border
+                                        Grid.Column="0"
+                                        HeightRequest="40"
+                                        WidthRequest="40"
+                                        BackgroundColor="#070B14"
+                                        Stroke="#2A3A54"
+                                        StrokeShape="RoundRectangle 10"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            AutomationId="Dashboard_ModuleCardIconLabel"
+                                            FontSize="20"
+                                            HorizontalOptions="Center"
+                                            Text="{Binding IconGlyph}"
+                                            VerticalOptions="Center" />
+                                    </Border>
+
+                                    <VerticalStackLayout
+                                        Grid.Column="1"
+                                        Spacing="3"
+                                        VerticalOptions="Center">
+                                        <HorizontalStackLayout Spacing="8">
+                                            <Label
+                                                AutomationId="Dashboard_ModuleCardTitleLabel"
+                                                FontAttributes="Bold"
+                                                FontSize="14"
+                                                Text="{Binding Title}"
+                                                TextColor="#F8FAFC"
+                                                VerticalOptions="Center" />
+                                            <Border
+                                                Padding="6, 2"
+                                                BackgroundColor="#070B14"
+                                                Stroke="#1E293B"
+                                                StrokeShape="RoundRectangle 6"
+                                                VerticalOptions="Center">
+                                                <Label
+                                                    AutomationId="Dashboard_ModuleCardCategoryLabel"
+                                                    FontFamily="monospace"
+                                                    FontSize="9.5"
+                                                    Text="{Binding CategoryBadge}"
+                                                    TextColor="#38BDF8" />
+                                            </Border>
+                                            <Border
+                                                Padding="6, 2"
+                                                BackgroundColor="#070B14"
+                                                Stroke="#1E293B"
+                                                StrokeShape="RoundRectangle 6"
+                                                VerticalOptions="Center">
+                                                <Label
+                                                    AutomationId="Dashboard_ModuleCardStatusBadgeLabel"
+                                                    FontAttributes="Bold"
+                                                    FontFamily="monospace"
+                                                    FontSize="9.5"
+                                                    Text="{Binding StatusText}"
+                                                    TextColor="{Binding StatusColor}" />
+                                            </Border>
+                                        </HorizontalStackLayout>
+                                        <Label
+                                            AutomationId="Dashboard_ModuleCardDescriptionLabel"
+                                            FontSize="11.5"
+                                            LineBreakMode="TailTruncation"
+                                            Text="{Binding Description}"
+                                            TextColor="#94A3B8" />
+                                    </VerticalStackLayout>
+
+                                    <HorizontalStackLayout
+                                        Grid.Column="2"
+                                        Spacing="6"
+                                        VerticalOptions="Center">
+                                        <Button
+                                            AutomationId="Dashboard_ModuleCardToggleButton"
+                                            BackgroundColor="#162033"
+                                            BorderColor="#2A3A54"
+                                            BorderWidth="1"
+                                            Command="{Binding ToggleCommand}"
+                                            Text="Start / Stop"
+                                            TextColor="#E2E8F0" />
+                                        <Button
+                                            AutomationId="Dashboard_ModuleCardOpenButton"
+                                            BackgroundColor="#0284C7"
+                                            Command="{Binding OpenCommand}"
+                                            Text="Workspace →"
+                                            TextColor="White" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>

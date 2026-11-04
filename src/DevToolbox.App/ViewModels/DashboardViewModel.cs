@@ -22,22 +22,30 @@ public sealed partial class ToolModuleCardItem(
 
     public string Description => AppStrings.GetString(Module.DescriptionResourceKey);
 
-    public string CategoryBadge => $"{Module.Category} • {Module.SupportedPlatforms}";
+    public string CategoryBadge => $"{Module.Category.ToString().ToUpperInvariant()}  •  {Module.SupportedPlatforms}";
 
     public string Route => Module.Route;
 
     [ObservableProperty]
-    public partial string StatusText { get; set; } = module.IsRunning ? "ACTIVE" : "READY";
+    public partial string StatusText { get; set; } = module.IsRunning ? "● ACTIVE" : "○ STANDBY";
 
-    [ RelayCommand ]
+    [ObservableProperty]
+    public partial Color StatusColor { get; set; } = module.IsRunning
+        ? Color.FromArgb("#34D399")
+        : Color.FromArgb("#94A3B8");
+
+    [RelayCommand]
     private Task OpenAsync() => openAction(this);
 
-    [ RelayCommand ]
+    [RelayCommand]
     private Task ToggleAsync() => toggleAction(this);
 
     public void RefreshState()
     {
-        StatusText = Module.IsRunning ? "ACTIVE" : "READY";
+        StatusText = Module.IsRunning ? "● ACTIVE" : "○ STANDBY";
+        StatusColor = Module.IsRunning
+            ? Color.FromArgb("#34D399")
+            : Color.FromArgb("#94A3B8");
     }
 }
 
@@ -47,17 +55,20 @@ public sealed partial class DashboardViewModel : ObservableObject
     private readonly IOverlayService _overlayService;
     private readonly INetworkProxyService _proxyService;
     private readonly IOrientationStateService _orientationService;
+    private readonly ILogcatStreamService _logcatService;
 
     public DashboardViewModel(
         IDevToolRegistry toolRegistry,
         IOverlayService overlayService,
         INetworkProxyService proxyService,
-        IOrientationStateService orientationService)
+        IOrientationStateService orientationService,
+        ILogcatStreamService logcatService)
     {
         _toolRegistry = toolRegistry;
         _overlayService = overlayService;
         _proxyService = proxyService;
         _orientationService = orientationService;
+        _logcatService = logcatService;
 
         _overlayService.StatusChanged += (_, _) => MainThread.BeginInvokeOnMainThread(RefreshSummaryState);
         _proxyService.StatusChanged += (_, _) => MainThread.BeginInvokeOnMainThread(RefreshSummaryState);
@@ -73,18 +84,68 @@ public sealed partial class DashboardViewModel : ObservableObject
     public partial string OverlaySummary { get; set; } = string.Empty;
 
     [ObservableProperty]
+    public partial string OverlayStateBadge { get; set; } = "STANDBY";
+
+    [ObservableProperty]
     public partial string ProxySummary { get; set; } = string.Empty;
 
     [ObservableProperty]
+    public partial string ProxyStateBadge { get; set; } = "STOPPED";
+
+    [ObservableProperty]
     public partial string OrientationSummary { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string OrientationStateBadge { get; set; } = "LOCAL";
+
+    [ObservableProperty]
+    public partial string LogcatSummary { get; set; } = "Unified ADB & Diagnostic Sink";
+
+    [ObservableProperty]
+    public partial string LogcatStateBadge { get; set; } = "READY";
 
     [RelayCommand]
     private async Task QuickToggleOverlayAsync()
     {
         var quickActions = _toolRegistry.GetAllOverlayQuickActions();
         await _overlayService.RefreshQuickActionsAsync(quickActions);
-        await _overlayService.ToggleOverlayAsync(new OverlayConfiguration());
+        await _overlayService.ToggleOverlayAsync(
+            new OverlayConfiguration(InitialExpansionState: OverlayExpansionState.CollapsedGear));
         RefreshSummaryState();
+    }
+
+    [RelayCommand]
+    private async Task LaunchGearOverlayAsync()
+    {
+        var quickActions = _toolRegistry.GetAllOverlayQuickActions();
+        await _overlayService.RefreshQuickActionsAsync(quickActions);
+        await _overlayService.ShowOverlayAsync(
+            new OverlayConfiguration(InitialExpansionState: OverlayExpansionState.CollapsedGear));
+        RefreshSummaryState();
+    }
+
+    [RelayCommand]
+    private async Task LaunchExpandedOverlayAsync()
+    {
+        var quickActions = _toolRegistry.GetAllOverlayQuickActions();
+        await _overlayService.RefreshQuickActionsAsync(quickActions);
+        await _overlayService.ShowOverlayAsync(
+            new OverlayConfiguration(InitialExpansionState: OverlayExpansionState.ExpandedPanel));
+        RefreshSummaryState();
+    }
+
+    [RelayCommand]
+    private async Task FloatOverOsAsync()
+    {
+        var quickActions = _toolRegistry.GetAllOverlayQuickActions();
+        await _overlayService.RefreshQuickActionsAsync(quickActions);
+        await _overlayService.ShowOverlayAsync(
+            new OverlayConfiguration(InitialExpansionState: OverlayExpansionState.CollapsedGear));
+        RefreshSummaryState();
+
+#if ANDROID
+        Platform.CurrentActivity?.MoveTaskToBack(true);
+#endif
     }
 
     [RelayCommand]
@@ -108,6 +169,15 @@ public sealed partial class DashboardViewModel : ObservableObject
         await _orientationService.CycleOrientationAsync(
             _orientationService.CurrentState.ExecutionMode,
             _orientationService.CurrentState.ConnectedDeviceSerial);
+        RefreshSummaryState();
+    }
+
+    [RelayCommand]
+    private void QuickEmitMarker()
+    {
+        var stamp = DateTimeOffset.Now.ToString("HH:mm:ss");
+        _logcatService.EmitDiagnosticEntry("I", "QA.Workbench", $"Workbench QA Marker @ {stamp}");
+        LogcatSummary = $"Last marker @ {stamp}";
         RefreshSummaryState();
     }
 
@@ -151,13 +221,24 @@ public sealed partial class DashboardViewModel : ObservableObject
     private void RefreshSummaryState()
     {
         var overlay = _overlayService.CurrentStatus;
-        OverlaySummary = $"Overlay: {(overlay.IsVisible ? "Visible" : "Hidden")} ({overlay.PermissionState})";
+        OverlayStateBadge = overlay.IsVisible
+            ? overlay.ExpansionState == OverlayExpansionState.CollapsedGear ? "⚙ GEAR HUD" : "⊞ EXPANDED"
+            : overlay.PermissionState == OverlayPermissionState.Granted ? "READY" : "DENIED";
+        OverlaySummary = overlay.IsVisible
+            ? $"Active: {overlay.ExpansionState} ({overlay.PermissionState})"
+            : $"Standby • Permission {overlay.PermissionState}";
 
         var proxy = _proxyService.CurrentStatus;
-        ProxySummary = $"Proxy: {(proxy.IsRunning ? $"Listening on {proxy.ListenAddress}" : "Stopped")} • {proxy.ActiveRulesCount} Active Rules • {proxy.TotalInterceptedCount} Requests";
+        ProxyStateBadge = proxy.IsRunning ? "● LISTENING" : "STOPPED";
+        ProxySummary = proxy.IsRunning
+            ? $":{proxy.ListenPort} • {proxy.ActiveRulesCount} Rules • {proxy.TotalInterceptedCount} Req"
+            : $"Port :{proxy.ListenPort} • {proxy.ActiveRulesCount} Rules • {proxy.TotalInterceptedCount} Req";
 
         var orientation = _orientationService.CurrentState;
-        OrientationSummary = $"Orientation: {orientation.CurrentOrientation} ({orientation.ExecutionMode})";
+        OrientationStateBadge = orientation.ExecutionMode == TargetExecutionMode.LocalDevice ? "LOCAL" : "ADB";
+        OrientationSummary = $"{orientation.CurrentOrientation} ({orientation.ExecutionMode})";
+
+        LogcatStateBadge = _logcatService.IsStreaming ? "● STREAMING" : "READY";
 
         foreach (var card in Modules)
         {

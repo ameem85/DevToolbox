@@ -47,13 +47,16 @@ public sealed partial class OverlayToolViewModel : ObservableObject
     public partial bool IsPinnedTopMost { get; set; } = true;
 
     [ObservableProperty]
-    public partial double OverlayOpacity { get; set; } = 0.94;
+    public partial double OverlayOpacity { get; set; } = 0.96;
 
     [ObservableProperty]
     public partial string PermissionBadge { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial string ImplementationBadge { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string ExpansionStateBadge { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial string StatusDetails { get; set; } = string.Empty;
@@ -84,21 +87,55 @@ public sealed partial class OverlayToolViewModel : ObservableObject
     [RelayCommand]
     private async Task ShowOverlayAsync()
     {
-        await _overlayService.RefreshQuickActionsAsync(_toolRegistry.GetAllOverlayQuickActions());
-        var config = new OverlayConfiguration(
-            IsPinnedTopMost,
-            OverlayOpacity,
-            48,
-            140,
-            true);
-        await _overlayService.ShowOverlayAsync(config);
+        await ShowWithStateAsync(OverlayExpansionState.CollapsedGear);
+    }
+
+    [RelayCommand]
+    private async Task ShowCollapsedGearAsync()
+    {
+        await ShowWithStateAsync(OverlayExpansionState.CollapsedGear);
+    }
+
+    [RelayCommand]
+    private async Task ShowExpandedPanelAsync()
+    {
+        await ShowWithStateAsync(OverlayExpansionState.ExpandedPanel);
+    }
+
+    [RelayCommand]
+    private async Task ExpandToFullAppAsync()
+    {
+        await _overlayService.ExpandToFullApplicationAsync("DashboardPage");
         RefreshStatus();
+    }
+
+    [RelayCommand]
+    private async Task FloatOverOsAsGearAsync()
+    {
+        await ShowWithStateAsync(OverlayExpansionState.CollapsedGear);
+#if ANDROID
+        Platform.CurrentActivity?.MoveTaskToBack(true);
+#endif
     }
 
     [RelayCommand]
     private async Task HideOverlayAsync()
     {
         await _overlayService.HideOverlayAsync();
+        RefreshStatus();
+    }
+
+    private async Task ShowWithStateAsync(OverlayExpansionState state)
+    {
+        await _overlayService.RefreshQuickActionsAsync(_toolRegistry.GetAllOverlayQuickActions());
+        var config = new OverlayConfiguration(
+            IsPinnedTopMost,
+            OverlayOpacity,
+            36,
+            140,
+            true,
+            state);
+        await _overlayService.ShowOverlayAsync(config);
         RefreshStatus();
     }
 
@@ -114,8 +151,9 @@ public sealed partial class OverlayToolViewModel : ObservableObject
     private void RefreshStatus()
     {
         var snapshot = _overlayService.CurrentStatus;
-        PermissionBadge = $"Permission: {snapshot.PermissionState}";
-        ImplementationBadge = $"Engine: {snapshot.ImplementationKind} • {(snapshot.IsVisible ? "ACTIVE" : "HIDDEN")}";
+        PermissionBadge = $"PERMISSION: {snapshot.PermissionState.ToString().ToUpperInvariant()}";
+        ImplementationBadge = $"ENGINE: {snapshot.ImplementationKind}";
+        ExpansionStateBadge = $"MODE: {snapshot.ExpansionState.ToString().ToUpperInvariant()}";
         StatusDetails = snapshot.StatusDetails;
     }
 }

@@ -128,10 +128,18 @@ public static class AppStrings
     public static string DeepLink_HistoryHeader => GetString(nameof(DeepLink_HistoryHeader));
 
     public static string QuickAction_HideOverlay => GetString(nameof(QuickAction_HideOverlay));
+    public static string QuickAction_CollapseGear => GetString(nameof(QuickAction_CollapseGear));
+    public static string QuickAction_ExpandFullApp => GetString(nameof(QuickAction_ExpandFullApp));
     public static string QuickAction_ToggleProxy => GetString(nameof(QuickAction_ToggleProxy));
+    public static string QuickAction_SimulateFault503 => GetString(nameof(QuickAction_SimulateFault503));
+    public static string QuickAction_ClearTraffic => GetString(nameof(QuickAction_ClearTraffic));
     public static string QuickAction_ForcePortrait => GetString(nameof(QuickAction_ForcePortrait));
     public static string QuickAction_ForceLandscape => GetString(nameof(QuickAction_ForceLandscape));
     public static string QuickAction_CycleOrientation => GetString(nameof(QuickAction_CycleOrientation));
+    public static string QuickAction_UnlockOrientation => GetString(nameof(QuickAction_UnlockOrientation));
     public static string QuickAction_EmitLogMarker => GetString(nameof(QuickAction_EmitLogMarker));
+    public static string QuickAction_ToggleLogStream => GetString(nameof(QuickAction_ToggleLogStream));
+    public static string QuickAction_CaptureTelemetry => GetString(nameof(QuickAction_CaptureTelemetry));
+    public static string QuickAction_FireTestDeepLink => GetString(nameof(QuickAction_FireTestDeepLink));
     public static string Hud_FloatingTitle => GetString(nameof(Hud_FloatingTitle));
 }

@@ -9,7 +9,7 @@ using WinRT.Interop;
 namespace DevToolbox.App.Platforms.Windows.Services;
 
 /// <summary>
-/// Windows system-level floating overlay engine using WinUI 3 <see cref="AppWindow"/> + <see cref="OverlappedPresenter"/>
+/// Windows system-level 3-state floating overlay engine using WinUI 3 <see cref="AppWindow"/> + <see cref="OverlappedPresenter"/>
 /// and Win32 <c>user32.dll</c> P/Invoke (<c>SetWindowPos(HWND_TOPMOST)</c>, <c>WS_EX_LAYERED</c>, <c>SetLayeredWindowAttributes</c>).
 /// </summary>
 public sealed partial class WindowsOverlayService : IOverlayService
@@ -22,10 +22,14 @@ public sealed partial class WindowsOverlayService : IOverlayService
     private const uint SwpNoMove = 0x0002;
     private const uint SwpNoActivate = 0x0010;
     private const uint SwpShowWindow = 0x0040;
+    private const int SwRestore = 9;
     private static readonly nint HwndTopMost = new(-1);
 
     private Window? _floatingWindow;
+    private FloatingHudPage? _hudPage;
     private IReadOnlyList<OverlayQuickAction> _quickActions = [];
+    private OverlayConfiguration _lastConfig = new();
+    private OverlayExpansionState _expansionState = OverlayExpansionState.Hidden;
     private bool _isVisible;
 
     public event EventHandler<OverlayStatusSnapshot>? StatusChanged;
@@ -35,8 +39,9 @@ public sealed partial class WindowsOverlayService : IOverlayService
         OverlayPermissionState.Granted,
         OverlayImplementationKind.WindowsWin32TopMostWindow,
         _isVisible
-            ? "Win32 HWND_TOPMOST + WS_EX_LAYERED floating overlay window active"
-            : "Win32 TopMost overlay permission granted natively on Windows Desktop");
+            ? $"Win32 HWND_TOPMOST floating overlay active ({_expansionState})"
+            : "Win32 TopMost overlay permission granted natively on Windows Desktop",
+        _isVisible ? _expansionState : OverlayExpansionState.Hidden);
 
     public Task<OverlayPermissionState> CheckPermissionAsync(CancellationToken cancellationToken = default)
     {
@@ -54,20 +59,36 @@ public sealed partial class WindowsOverlayService : IOverlayService
         OverlayConfiguration configuration,
         CancellationToken cancellationToken = default)
     {
+        _lastConfig = configuration;
+        var targetState = configuration.InitialExpansionState == OverlayExpansionState.Hidden
+            ? OverlayExpansionState.CollapsedGear
+            : configuration.InitialExpansionState;
+
+        if (targetState == OverlayExpansionState.FullForegroundApp)
+        {
+            return await ExpandToFullApplicationAsync(null, cancellationToken).ConfigureAwait(false);
+        }
+
         await MainThread.InvokeOnMainThreadAsync(() =>
         {
-            if (_isVisible && _floatingWindow is not null)
+            _expansionState = targetState;
+            if (_isVisible && _floatingWindow is not null && _hudPage is not null)
             {
-                ApplyNativeWin32TopMostAndOpacity(_floatingWindow, configuration);
+                _hudPage.ApplyExpansionState(_expansionState);
+                ApplyNativeWin32TopMostAndOpacity(_floatingWindow, configuration, _expansionState);
                 return;
             }
 
-            var hudPage = new FloatingHudPage(_quickActions, async () => await HideOverlayAsync());
-            _floatingWindow = new Window(hudPage)
+            _hudPage = new FloatingHudPage(
+                _quickActions,
+                _expansionState,
+                async nextState => await SetExpansionStateAsync(nextState),
+                async route => await ExpandToFullApplicationAsync(route),
+                async () => await HideOverlayAsync());
+
+            _floatingWindow = new Window(_hudPage)
             {
                 Title = "DevToolbox Floating HUD",
-                Width = 420,
-                Height = 148,
                 X = configuration.InitialX,
                 Y = configuration.InitialY
             };
@@ -75,12 +96,14 @@ public sealed partial class WindowsOverlayService : IOverlayService
             _floatingWindow.Destroying += (_, _) =>
             {
                 _isVisible = false;
+                _expansionState = OverlayExpansionState.Hidden;
                 _floatingWindow = null;
+                _hudPage = null;
                 RaiseStatusChanged();
             };
 
             Application.Current?.OpenWindow(_floatingWindow);
-            ApplyNativeWin32TopMostAndOpacity(_floatingWindow, configuration);
+            ApplyNativeWin32TopMostAndOpacity(_floatingWindow, configuration, _expansionState);
             _isVisible = true;
         }).ConfigureAwait(false);
 
@@ -105,7 +128,9 @@ public sealed partial class WindowsOverlayService : IOverlayService
             }
 
             _floatingWindow = null;
+            _hudPage = null;
             _isVisible = false;
+            _expansionState = OverlayExpansionState.Hidden;
         }).ConfigureAwait(false);
 
         RaiseStatusChanged();
@@ -119,6 +144,77 @@ public sealed partial class WindowsOverlayService : IOverlayService
             ? HideOverlayAsync(cancellationToken)
             : ShowOverlayAsync(configuration, cancellationToken);
 
+    public async Task<OverlayStatusSnapshot> SetExpansionStateAsync(
+        OverlayExpansionState expansionState,
+        CancellationToken cancellationToken = default)
+    {
+        if (expansionState == OverlayExpansionState.Hidden)
+        {
+            return await HideOverlayAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        if (expansionState == OverlayExpansionState.FullForegroundApp)
+        {
+            return await ExpandToFullApplicationAsync(null, cancellationToken).ConfigureAwait(false);
+        }
+
+        if (!_isVisible)
+        {
+            return await ShowOverlayAsync(_lastConfig with { InitialExpansionState = expansionState }, cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            _expansionState = expansionState;
+            _hudPage?.ApplyExpansionState(expansionState);
+            if (_floatingWindow is not null)
+            {
+                ApplyNativeWin32TopMostAndOpacity(_floatingWindow, _lastConfig, expansionState);
+            }
+        }).ConfigureAwait(false);
+
+        RaiseStatusChanged();
+        return CurrentStatus;
+    }
+
+    public async Task<OverlayStatusSnapshot> ExpandToFullApplicationAsync(
+        string? targetRoute = null,
+        CancellationToken cancellationToken = default)
+    {
+        await MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            if (_isVisible)
+            {
+                _expansionState = OverlayExpansionState.CollapsedGear;
+                _hudPage?.ApplyExpansionState(_expansionState);
+                if (_floatingWindow is not null)
+                {
+                    ApplyNativeWin32TopMostAndOpacity(_floatingWindow, _lastConfig, _expansionState);
+                }
+            }
+
+            var mainWindow = Application.Current?.Windows.FirstOrDefault();
+            if (mainWindow?.Handler?.PlatformView is Microsoft.UI.Xaml.Window nativeMain)
+            {
+                var mainHwnd = WindowNative.GetWindowHandle(nativeMain);
+                if (mainHwnd != nint.Zero)
+                {
+                    _ = ShowWindow(mainHwnd, SwRestore);
+                    _ = SetForegroundWindow(mainHwnd);
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(targetRoute) && Shell.Current is not null)
+            {
+                await Shell.Current.GoToAsync($"//{targetRoute}");
+            }
+        }).ConfigureAwait(false);
+
+        RaiseStatusChanged();
+        return CurrentStatus;
+    }
+
     public Task RefreshQuickActionsAsync(
         IReadOnlyList<OverlayQuickAction> quickActions,
         CancellationToken cancellationToken = default)
@@ -127,7 +223,10 @@ public sealed partial class WindowsOverlayService : IOverlayService
         return Task.CompletedTask;
     }
 
-    private static void ApplyNativeWin32TopMostAndOpacity(Window mauiWindow, OverlayConfiguration configuration)
+    private static void ApplyNativeWin32TopMostAndOpacity(
+        Window mauiWindow,
+        OverlayConfiguration configuration,
+        OverlayExpansionState state)
     {
         if (mauiWindow.Handler?.PlatformView is not Microsoft.UI.Xaml.Window nativeWindow)
         {
@@ -140,11 +239,14 @@ public sealed partial class WindowsOverlayService : IOverlayService
             return;
         }
 
+        var width = state == OverlayExpansionState.CollapsedGear ? 280 : 480;
+        var height = state == OverlayExpansionState.CollapsedGear ? 92 : 240;
+
         var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd);
         var appWindow = AppWindow.GetFromWindowId(windowId);
         if (appWindow is not null)
         {
-            appWindow.MoveAndResize(new RectInt32(configuration.InitialX, configuration.InitialY, 440, 156));
+            appWindow.MoveAndResize(new RectInt32(configuration.InitialX, configuration.InitialY, width, height));
             if (appWindow.Presenter is OverlappedPresenter presenter)
             {
                 presenter.IsAlwaysOnTop = configuration.IsPinnedTopMost;
@@ -153,7 +255,6 @@ public sealed partial class WindowsOverlayService : IOverlayService
             }
         }
 
-        // Apply Win32 HWND_TOPMOST & WS_EX_LAYERED alpha transparency
         if (configuration.IsPinnedTopMost)
         {
             _ = SetWindowPos(
@@ -185,6 +286,14 @@ public sealed partial class WindowsOverlayService : IOverlayService
         int cx,
         int cy,
         uint uFlags);
+
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool SetForegroundWindow(nint hWnd);
+
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool ShowWindow(nint hWnd, int nCmdShow);
 
     [LibraryImport("user32.dll", EntryPoint = "GetWindowLongPtrW", SetLastError = true)]
     private static partial nint GetWindowLongPtr(nint hWnd, int nIndex);

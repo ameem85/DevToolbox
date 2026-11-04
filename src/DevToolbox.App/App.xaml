@@ -2,4 +2,87 @@
 <Application
     x:Class="DevToolbox.App.App"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" />
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    UserAppTheme="Dark">
+    <Application.Resources>
+        <ResourceDictionary>
+            <!-- Studio Color Tokens -->
+            <Color x:Key="BgCanvas">#060A12</Color>
+            <Color x:Key="BgHeader">#0B1120</Color>
+            <Color x:Key="BgSurface">#0F172A</Color>
+            <Color x:Key="BgElevated">#162033</Color>
+            <Color x:Key="BgWell">#070B14</Color>
+
+            <Color x:Key="BorderSubtle">#1E293B</Color>
+            <Color x:Key="BorderDefault">#2A3A54</Color>
+            <Color x:Key="BorderCyan">#0284C7</Color>
+            <Color x:Key="BorderEmerald">#059669</Color>
+            <Color x:Key="BorderAmber">#D97706</Color>
+            <Color x:Key="BorderIndigo">#4F46E5</Color>
+
+            <Color x:Key="TextPrimary">#F8FAFC</Color>
+            <Color x:Key="TextSecondary">#94A3B8</Color>
+            <Color x:Key="TextMuted">#64748B</Color>
+            <Color x:Key="AccentCyan">#38BDF8</Color>
+            <Color x:Key="AccentEmerald">#34D399</Color>
+            <Color x:Key="AccentAmber">#FBBF24</Color>
+            <Color x:Key="AccentIndigo">#818CF8</Color>
+            <Color x:Key="AccentRose">#FB7185</Color>
+
+            <!-- Global Control Defaults -->
+            <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
+                <Setter Property="BackgroundColor" Value="{StaticResource BgCanvas}" />
+                <Setter Property="Shell.NavBarIsVisible" Value="False" />
+            </Style>
+
+            <Style TargetType="Button">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="Padding" Value="12,6" />
+                <Setter Property="MinimumHeightRequest" Value="34" />
+                <Setter Property="HeightRequest" Value="34" />
+            </Style>
+
+            <Style TargetType="Entry">
+                <Setter Property="BackgroundColor" Value="{StaticResource BgWell}" />
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+                <Setter Property="PlaceholderColor" Value="{StaticResource TextMuted}" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="MinimumHeightRequest" Value="36" />
+            </Style>
+
+            <Style TargetType="Picker">
+                <Setter Property="BackgroundColor" Value="{StaticResource BgWell}" />
+                <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="MinimumHeightRequest" Value="36" />
+            </Style>
+
+            <!-- Named Studio Styles -->
+            <Style x:Key="StudioCardBorder" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{StaticResource BgSurface}" />
+                <Setter Property="Stroke" Value="{StaticResource BorderDefault}" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 12" />
+                <Setter Property="Padding" Value="14,12" />
+            </Style>
+
+            <Style x:Key="StudioWellBorder" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{StaticResource BgWell}" />
+                <Setter Property="Stroke" Value="{StaticResource BorderSubtle}" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 8" />
+                <Setter Property="Padding" Value="10,8" />
+            </Style>
+
+            <Style x:Key="StudioPillBorder" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{StaticResource BgWell}" />
+                <Setter Property="Stroke" Value="{StaticResource BorderDefault}" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 999" />
+                <Setter Property="Padding" Value="8,3" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

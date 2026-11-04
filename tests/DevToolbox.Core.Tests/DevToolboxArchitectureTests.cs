@@ -35,11 +35,39 @@ public sealed class DevToolboxArchitectureTests
         Assert.Equal(DeepLinkTesterToolModule.ModuleId, modules[5].Id);
 
         var quickActions = registry.GetAllOverlayQuickActions();
+        Assert.Contains(quickActions, a => a.ActionId == "overlay.collapse_gear");
+        Assert.Contains(quickActions, a => a.ActionId == "overlay.expand_full");
         Assert.Contains(quickActions, a => a.ActionId == "overlay.hide");
         Assert.Contains(quickActions, a => a.ActionId == "proxy.toggle");
+        Assert.Contains(quickActions, a => a.ActionId == "proxy.fault_503");
         Assert.Contains(quickActions, a => a.ActionId == "orientation.portrait");
         Assert.Contains(quickActions, a => a.ActionId == "orientation.landscape");
         Assert.Contains(quickActions, a => a.ActionId == "logcat.marker");
+        Assert.Contains(quickActions, a => a.ActionId == "inspector.capture");
+        Assert.Contains(quickActions, a => a.ActionId == "deeplink.test");
+    }
+
+    [Fact]
+    public async Task OverlayService_SupportsThreeStageExpansionLifecycle()
+    {
+        var overlay = new FakeOverlayService();
+        Assert.Equal(OverlayExpansionState.Hidden, overlay.CurrentStatus.ExpansionState);
+
+        // Stage 1: Launch as Collapsed Gear
+        var gearSnapshot = await overlay.ShowOverlayAsync(
+            new OverlayConfiguration(InitialExpansionState: OverlayExpansionState.CollapsedGear));
+        Assert.True(gearSnapshot.IsVisible);
+        Assert.Equal(OverlayExpansionState.CollapsedGear, gearSnapshot.ExpansionState);
+
+        // Stage 2: Expand to Quick Options Panel
+        var expandedSnapshot = await overlay.SetExpansionStateAsync(OverlayExpansionState.ExpandedPanel);
+        Assert.True(expandedSnapshot.IsVisible);
+        Assert.Equal(OverlayExpansionState.ExpandedPanel, expandedSnapshot.ExpansionState);
+
+        // Stage 3: Expand to Full Foreground Application (collapses overlay back to gear & brings app forward)
+        var fullAppSnapshot = await overlay.ExpandToFullApplicationAsync("DashboardPage");
+        Assert.True(fullAppSnapshot.IsVisible);
+        Assert.Equal(OverlayExpansionState.CollapsedGear, fullAppSnapshot.ExpansionState);
     }
 
     [Fact]
@@ -166,14 +194,17 @@ public sealed class DevToolboxArchitectureTests
             OverlayConfiguration configuration,
             CancellationToken cancellationToken = default)
         {
-            CurrentStatus = CurrentStatus with { IsVisible = true };
+            var nextState = configuration.InitialExpansionState == OverlayExpansionState.Hidden
+                ? OverlayExpansionState.CollapsedGear
+                : configuration.InitialExpansionState;
+            CurrentStatus = CurrentStatus with { IsVisible = true, ExpansionState = nextState };
             StatusChanged?.Invoke(this, CurrentStatus);
             return Task.FromResult(CurrentStatus);
         }
 
         public Task<OverlayStatusSnapshot> HideOverlayAsync(CancellationToken cancellationToken = default)
         {
-            CurrentStatus = CurrentStatus with { IsVisible = false };
+            CurrentStatus = CurrentStatus with { IsVisible = false, ExpansionState = OverlayExpansionState.Hidden };
             StatusChanged?.Invoke(this, CurrentStatus);
             return Task.FromResult(CurrentStatus);
         }
@@ -182,6 +213,33 @@ public sealed class DevToolboxArchitectureTests
             OverlayConfiguration configuration,
             CancellationToken cancellationToken = default) =>
             CurrentStatus.IsVisible ? HideOverlayAsync(cancellationToken) : ShowOverlayAsync(configuration, cancellationToken);
+
+        public Task<OverlayStatusSnapshot> SetExpansionStateAsync(
+            OverlayExpansionState expansionState,
+            CancellationToken cancellationToken = default)
+        {
+            CurrentStatus = CurrentStatus with
+            {
+                IsVisible = expansionState != OverlayExpansionState.Hidden,
+                ExpansionState = expansionState
+            };
+            StatusChanged?.Invoke(this, CurrentStatus);
+            return Task.FromResult(CurrentStatus);
+        }
+
+        public Task<OverlayStatusSnapshot> ExpandToFullApplicationAsync(
+            string? targetRoute = null,
+            CancellationToken cancellationToken = default)
+        {
+            CurrentStatus = CurrentStatus with
+            {
+                IsVisible = true,
+                ExpansionState = OverlayExpansionState.CollapsedGear,
+                StatusDetails = $"Foreground:{targetRoute ?? "Default"}"
+            };
+            StatusChanged?.Invoke(this, CurrentStatus);
+            return Task.FromResult(CurrentStatus);
+        }
 
         public Task RefreshQuickActionsAsync(
             IReadOnlyList<OverlayQuickAction> quickActions,

@@ -54,13 +54,28 @@ public sealed class LogcatReaderToolModule(ILogcatStreamService logcatStreamServ
             "logcat.marker",
             "QuickAction_EmitLogMarker",
             "📌",
-            ct =>
+            _ =>
             {
                 logcatStreamService.EmitDiagnosticEntry(
                     "I",
                     "QA.Marker",
                     $"Manual QA inspection checkpoint @ {DateTimeOffset.Now:HH:mm:ss}");
                 return Task.CompletedTask;
+            }),
+        new OverlayQuickAction(
+            "logcat.toggle",
+            "QuickAction_ToggleLogStream",
+            "📡",
+            async ct =>
+            {
+                if (logcatStreamService.IsStreaming)
+                {
+                    await logcatStreamService.StopStreamingAsync(ct).ConfigureAwait(false);
+                }
+                else
+                {
+                    await logcatStreamService.StartStreamingAsync(null, null, ct).ConfigureAwait(false);
+                }
             })
     ];
 }
@@ -106,7 +121,18 @@ public sealed class DeviceInfoInspectorToolModule(IDeviceInspectorService inspec
         return Task.CompletedTask;
     }
 
-    public IReadOnlyList<OverlayQuickAction> GetQuickActions() => [];
+    public IReadOnlyList<OverlayQuickAction> GetQuickActions() =>
+    [
+        new OverlayQuickAction(
+            "inspector.capture",
+            "QuickAction_CaptureTelemetry",
+            "📋",
+            async ct =>
+            {
+                await inspectorService.CaptureReportAsync(null, ct).ConfigureAwait(false);
+                _hasCaptured = true;
+            })
+    ];
 }
 
 /// <summary>
@@ -144,5 +170,16 @@ public sealed class DeepLinkTesterToolModule(IAdbBridgeService adbBridge) : IDev
 
     public Task StopAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-    public IReadOnlyList<OverlayQuickAction> GetQuickActions() => [];
+    public IReadOnlyList<OverlayQuickAction> GetQuickActions() =>
+    [
+        new OverlayQuickAction(
+            "deeplink.test",
+            "QuickAction_FireTestDeepLink",
+            "🔗",
+            async ct =>
+            {
+                await adbBridge.LaunchDeepLinkAsync("devtoolbox://inspect/session", null, null, ct)
+                    .ConfigureAwait(false);
+            })
+    ];
 }

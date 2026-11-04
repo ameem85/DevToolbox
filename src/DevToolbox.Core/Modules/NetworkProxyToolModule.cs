@@ -53,6 +53,28 @@ public sealed class NetworkProxyToolModule(INetworkProxyService proxyService) : 
                 {
                     await proxyService.StartAsync(proxyService.CurrentStatus.ListenPort, ct).ConfigureAwait(false);
                 }
+            }),
+        new OverlayQuickAction(
+            "proxy.fault_503",
+            "QuickAction_SimulateFault503",
+            "⚡",
+            async ct =>
+            {
+                _ = await proxyService.EvaluateOrForwardRequestAsync(
+                    "POST",
+                    "https://api.sandbox.dev/api/v1/checkout",
+                    new Dictionary<string, string> { ["X-Overlay-Trigger"] = "HUD-Fault-Test" },
+                    "{\"cartId\":\"hud-test-503\"}",
+                    ct).ConfigureAwait(false);
+            }),
+        new OverlayQuickAction(
+            "proxy.clear",
+            "QuickAction_ClearTraffic",
+            "🧹",
+            _ =>
+            {
+                proxyService.ClearCaptures();
+                return Task.CompletedTask;
             })
     ];
 }

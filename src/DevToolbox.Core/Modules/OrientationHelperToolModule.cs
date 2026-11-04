@@ -71,6 +71,15 @@ public sealed class OrientationHelperToolModule(IOrientationStateService orienta
             async ct => await orientationService.CycleOrientationAsync(
                 orientationService.CurrentState.ExecutionMode,
                 orientationService.CurrentState.ConnectedDeviceSerial,
+                ct).ConfigureAwait(false)),
+        new OverlayQuickAction(
+            "orientation.unlock",
+            "QuickAction_UnlockOrientation",
+            "🔓",
+            async ct => await orientationService.ApplyOrientationAsync(
+                DeviceOrientationMode.Unlocked,
+                orientationService.CurrentState.ExecutionMode,
+                orientationService.CurrentState.ConnectedDeviceSerial,
                 ct).ConfigureAwait(false))
     ];
 }

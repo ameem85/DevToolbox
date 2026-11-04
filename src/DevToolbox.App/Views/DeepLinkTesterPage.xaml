@@ -8,190 +8,199 @@
     Title="{x:Static strings:AppStrings.DeepLink_PageTitle}"
     x:DataType="vm:DeepLinkTesterViewModel"
     AutomationId="DeepLinkTester_Page"
-    BackgroundColor="#0F172A">
+    BackgroundColor="#060A12"
+    Shell.NavBarIsVisible="False">
 
-    <ScrollView AutomationId="DeepLinkTester_ScrollView">
-        <VerticalStackLayout
-            Padding="20, 16"
-            Spacing="16">
-
-            <Border
-                Padding="16, 14"
-                BackgroundColor="#1E293B"
-                Stroke="#334155"
-                StrokeShape="RoundRectangle 12">
-                <VerticalStackLayout Spacing="10">
-                    <Label
-                        AutomationId="DeepLinkTester_HeaderLabel"
-                        FontAttributes="Bold"
-                        FontSize="17"
-                        Text="{x:Static strings:AppStrings.DeepLink_DispatchSectionTitle}"
-                        TextColor="#F8FAFC" />
-
-                    <Label
-                        AutomationId="DeepLinkTester_StatusBannerLabel"
-                        FontSize="13"
-                        Text="{Binding StatusBanner}"
-                        TextColor="#34D399" />
-
-                    <Entry
-                        AutomationId="DeepLinkTester_UriEntry"
-                        BackgroundColor="#0F172A"
-                        Placeholder="{x:Static strings:AppStrings.DeepLink_UriPlaceholder}"
-                        PlaceholderColor="#64748B"
-                        Text="{Binding DeepLinkUri}"
-                        TextColor="#38BDF8" />
-
-                    <Entry
-                        AutomationId="DeepLinkTester_PackageEntry"
-                        BackgroundColor="#0F172A"
-                        Placeholder="{x:Static strings:AppStrings.DeepLink_PackagePlaceholder}"
-                        PlaceholderColor="#64748B"
-                        Text="{Binding TargetPackageName}"
-                        TextColor="#F8FAFC" />
-
-                    <HorizontalStackLayout Spacing="12">
-                        <Switch
-                            AutomationId="DeepLinkTester_UseAdbSwitch"
-                            IsToggled="{Binding DispatchViaAdb}"
-                            OnColor="#38BDF8" />
+    <Grid RowDefinitions="Auto, *">
+        <!-- Studio Top Bar -->
+        <Border
+            Grid.Row="0"
+            Padding="16, 10"
+            BackgroundColor="#0B1120"
+            Stroke="#1E293B"
+            StrokeShape="RoundRectangle 0"
+            StrokeThickness="0,0,0,1">
+            <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
+                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                    <Border Padding="8, 4" BackgroundColor="#162033" Stroke="#38BDF8" StrokeShape="RoundRectangle 8">
+                        <Label FontAttributes="Bold" FontSize="13" Text="🔗" TextColor="#38BDF8" />
+                    </Border>
+                    <VerticalStackLayout Spacing="1" VerticalOptions="Center">
                         <Label
-                            AutomationId="DeepLinkTester_UseAdbLabel"
-                            FontSize="13"
-                            Text="{x:Static strings:AppStrings.DeepLink_UseAdbLabel}"
-                            TextColor="#E2E8F0"
-                            VerticalOptions="Center" />
-                    </HorizontalStackLayout>
+                            AutomationId="DeepLinkTester_HeaderLabel"
+                            FontAttributes="Bold"
+                            FontSize="15"
+                            Text="DEEP-LINK &amp; INTENT DISPATCHER"
+                            TextColor="#F8FAFC" />
+                        <Label
+                            AutomationId="DeepLinkTester_StatusBannerLabel"
+                            FontFamily="monospace"
+                            FontSize="11"
+                            Text="{Binding StatusBanner}"
+                            TextColor="#34D399" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
 
-                    <HorizontalStackLayout Spacing="10">
-                        <Button
-                            AutomationId="DeepLinkTester_LaunchButton"
-                            BackgroundColor="#059669"
-                            Command="{Binding LaunchDeepLinkCommand}"
-                            CornerRadius="8"
-                            Text="{x:Static strings:AppStrings.DeepLink_LaunchButton}"
-                            TextColor="White" />
-                        <Button
-                            AutomationId="DeepLinkTester_SavePresetButton"
-                            BackgroundColor="#2563EB"
-                            Command="{Binding SavePresetCommand}"
-                            CornerRadius="8"
-                            Text="{x:Static strings:AppStrings.DeepLink_SavePresetButton}"
-                            TextColor="White" />
-                    </HorizontalStackLayout>
-                </VerticalStackLayout>
-            </Border>
+                <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+                    <Button
+                        AutomationId="DeepLinkTester_LaunchButton"
+                        BackgroundColor="#059669"
+                        Command="{Binding LaunchDeepLinkCommand}"
+                        Text="🚀 Fire Deep-Link"
+                        TextColor="White" />
+                    <Button
+                        AutomationId="DeepLinkTester_SavePresetButton"
+                        BackgroundColor="#0284C7"
+                        Command="{Binding SavePresetCommand}"
+                        Text="+ Save Preset"
+                        TextColor="White" />
+                </HorizontalStackLayout>
+            </Grid>
+        </Border>
 
-            <Label
-                AutomationId="DeepLinkTester_PresetsHeaderLabel"
-                FontAttributes="Bold"
-                FontSize="16"
-                Text="{x:Static strings:AppStrings.DeepLink_PresetsHeader}"
-                TextColor="#E2E8F0" />
+        <ScrollView Grid.Row="1" AutomationId="DeepLinkTester_ScrollView">
+            <VerticalStackLayout Padding="16, 12" Spacing="12">
 
-            <CollectionView
-                AutomationId="DeepLinkTester_PresetsCollectionView"
-                ItemsSource="{Binding Presets}"
-                SelectionMode="None">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout
-                        ItemSpacing="8"
-                        Orientation="Vertical" />
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="vm:DeepLinkPresetItem">
-                        <Border
-                            Padding="14, 10"
-                            BackgroundColor="#1E293B"
-                            Stroke="#334155"
-                            StrokeShape="RoundRectangle 8">
-                            <Grid
-                                ColumnDefinitions="*, Auto"
-                                ColumnSpacing="12">
-                                <VerticalStackLayout
-                                    Grid.Column="0"
-                                    Spacing="2">
+                <Border Style="{StaticResource StudioCardBorder}">
+                    <VerticalStackLayout Spacing="8">
+                        <Grid ColumnDefinitions="*, 260" ColumnSpacing="10">
+                            <Entry
+                                Grid.Column="0"
+                                AutomationId="DeepLinkTester_UriEntry"
+                                FontFamily="monospace"
+                                Placeholder="{x:Static strings:AppStrings.DeepLink_UriPlaceholder}"
+                                Text="{Binding DeepLinkUri}"
+                                TextColor="#38BDF8" />
+                            <Entry
+                                Grid.Column="1"
+                                AutomationId="DeepLinkTester_PackageEntry"
+                                FontFamily="monospace"
+                                Placeholder="{x:Static strings:AppStrings.DeepLink_PackagePlaceholder}"
+                                Text="{Binding TargetPackageName}" />
+                        </Grid>
+
+                        <HorizontalStackLayout Spacing="10">
+                            <Switch
+                                AutomationId="DeepLinkTester_UseAdbSwitch"
+                                IsToggled="{Binding DispatchViaAdb}"
+                                OnColor="#38BDF8" />
+                            <Label
+                                AutomationId="DeepLinkTester_UseAdbLabel"
+                                FontSize="12"
+                                Text="{x:Static strings:AppStrings.DeepLink_UseAdbLabel}"
+                                TextColor="#E2E8F0"
+                                VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Label
+                    AutomationId="DeepLinkTester_PresetsHeaderLabel"
+                    FontAttributes="Bold"
+                    FontSize="12.5"
+                    Text="SAVED QA DEEP-LINK PRESETS"
+                    TextColor="#94A3B8" />
+
+                <CollectionView
+                    AutomationId="DeepLinkTester_PresetsCollectionView"
+                    ItemsSource="{Binding Presets}"
+                    SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout ItemSpacing="6" Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:DeepLinkPresetItem">
+                            <Border
+                                Padding="12, 8"
+                                BackgroundColor="#0F172A"
+                                Stroke="#1E293B"
+                                StrokeShape="RoundRectangle 8">
+                                <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
+                                    <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                                        <Label
+                                            AutomationId="DeepLinkTester_PresetTitleLabel"
+                                            FontAttributes="Bold"
+                                            FontSize="13"
+                                            Text="{Binding Title}"
+                                            TextColor="#F8FAFC" />
+                                        <Label
+                                            AutomationId="DeepLinkTester_PresetSubtitleLabel"
+                                            FontFamily="monospace"
+                                            FontSize="11"
+                                            Text="{Binding Subtitle}"
+                                            TextColor="#38BDF8" />
+                                    </VerticalStackLayout>
+                                    <Button
+                                        Grid.Column="1"
+                                        AutomationId="DeepLinkTester_PresetLaunchButton"
+                                        BackgroundColor="#0284C7"
+                                        Command="{Binding LaunchPresetCommand}"
+                                        Text="▶ Dispatch"
+                                        TextColor="White"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label
+                    AutomationId="DeepLinkTester_HistoryHeaderLabel"
+                    FontAttributes="Bold"
+                    FontSize="12.5"
+                    Text="RECENT DISPATCH EXECUTION LOG"
+                    TextColor="#94A3B8" />
+
+                <CollectionView
+                    AutomationId="DeepLinkTester_HistoryCollectionView"
+                    ItemsSource="{Binding DispatchHistory}"
+                    SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout ItemSpacing="4" Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:DeepLinkHistoryEntry">
+                            <Border
+                                Padding="10, 6"
+                                BackgroundColor="#070B14"
+                                Stroke="#1E293B"
+                                StrokeShape="RoundRectangle 6">
+                                <VerticalStackLayout Spacing="2">
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label
+                                            AutomationId="DeepLinkTester_HistoryTimeLabel"
+                                            FontFamily="monospace"
+                                            FontSize="10.5"
+                                            Text="{Binding TimestampText}"
+                                            TextColor="#64748B" />
+                                        <Label
+                                            AutomationId="DeepLinkTester_HistoryScopeLabel"
+                                            FontAttributes="Bold"
+                                            FontFamily="monospace"
+                                            FontSize="10.5"
+                                            Text="{Binding TargetScope}"
+                                            TextColor="#FBBF24" />
+                                        <Label
+                                            AutomationId="DeepLinkTester_HistoryUriLabel"
+                                            FontFamily="monospace"
+                                            FontSize="11"
+                                            LineBreakMode="TailTruncation"
+                                            Text="{Binding Uri}"
+                                            TextColor="#38BDF8" />
+                                    </HorizontalStackLayout>
                                     <Label
-                                        AutomationId="DeepLinkTester_PresetTitleLabel"
-                                        FontAttributes="Bold"
-                                        FontSize="14"
-                                        Text="{Binding Title}"
-                                        TextColor="#F8FAFC" />
-                                    <Label
-                                        AutomationId="DeepLinkTester_PresetSubtitleLabel"
-                                        FontSize="12"
-                                        Text="{Binding Subtitle}"
-                                        TextColor="#38BDF8" />
+                                        AutomationId="DeepLinkTester_HistoryResultLabel"
+                                        FontFamily="monospace"
+                                        FontSize="11"
+                                        Text="{Binding ResultSummary}"
+                                        TextColor="#94A3B8" />
                                 </VerticalStackLayout>
-                                <Button
-                                    Grid.Column="1"
-                                    AutomationId="DeepLinkTester_PresetLaunchButton"
-                                    BackgroundColor="#0284C7"
-                                    Command="{Binding LaunchPresetCommand}"
-                                    CornerRadius="8"
-                                    Text="{x:Static strings:AppStrings.DeepLink_LaunchButton}"
-                                    TextColor="White"
-                                    VerticalOptions="Center" />
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-            <Label
-                AutomationId="DeepLinkTester_HistoryHeaderLabel"
-                FontAttributes="Bold"
-                FontSize="16"
-                Text="{x:Static strings:AppStrings.DeepLink_HistoryHeader}"
-                TextColor="#E2E8F0" />
-
-            <CollectionView
-                AutomationId="DeepLinkTester_HistoryCollectionView"
-                ItemsSource="{Binding DispatchHistory}"
-                SelectionMode="None">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout
-                        ItemSpacing="6"
-                        Orientation="Vertical" />
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="vm:DeepLinkHistoryEntry">
-                        <Border
-                            Padding="12, 8"
-                            BackgroundColor="#1E293B"
-                            Stroke="#334155"
-                            StrokeShape="RoundRectangle 6">
-                            <VerticalStackLayout Spacing="2">
-                                <HorizontalStackLayout Spacing="8">
-                                    <Label
-                                        AutomationId="DeepLinkTester_HistoryTimeLabel"
-                                        FontSize="11"
-                                        Text="{Binding TimestampText}"
-                                        TextColor="#64748B" />
-                                    <Label
-                                        AutomationId="DeepLinkTester_HistoryScopeLabel"
-                                        FontAttributes="Bold"
-                                        FontSize="11"
-                                        Text="{Binding TargetScope}"
-                                        TextColor="#FBBF24" />
-                                    <Label
-                                        AutomationId="DeepLinkTester_HistoryUriLabel"
-                                        FontSize="12"
-                                        LineBreakMode="TailTruncation"
-                                        Text="{Binding Uri}"
-                                        TextColor="#38BDF8" />
-                                </HorizontalStackLayout>
-                                <Label
-                                    AutomationId="DeepLinkTester_HistoryResultLabel"
-                                    FontSize="12"
-                                    Text="{Binding ResultSummary}"
-                                    TextColor="#94A3B8" />
-                            </VerticalStackLayout>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-        </VerticalStackLayout>
-    </ScrollView>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>

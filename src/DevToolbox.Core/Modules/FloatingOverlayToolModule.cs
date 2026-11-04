@@ -43,6 +43,16 @@ public sealed class FloatingOverlayToolModule(IOverlayService overlayService) : 
     public IReadOnlyList<OverlayQuickAction> GetQuickActions() =>
     [
         new OverlayQuickAction(
+            "overlay.collapse_gear",
+            "QuickAction_CollapseGear",
+            "⚙",
+            async ct => await overlayService.SetExpansionStateAsync(OverlayExpansionState.CollapsedGear, ct).ConfigureAwait(false)),
+        new OverlayQuickAction(
+            "overlay.expand_full",
+            "QuickAction_ExpandFullApp",
+            "⤢",
+            async ct => await overlayService.ExpandToFullApplicationAsync(null, ct).ConfigureAwait(false)),
+        new OverlayQuickAction(
             "overlay.hide",
             "QuickAction_HideOverlay",
             "✕",

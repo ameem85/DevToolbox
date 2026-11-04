@@ -7,45 +7,47 @@
     xmlns:views="clr-namespace:DevToolbox.App.Views"
     Title="{x:Static strings:AppStrings.App_Title}"
     AutomationId="Main_AppShell"
-    BackgroundColor="#0F172A"
-    FlyoutBackgroundColor="#1E293B"
-    Shell.TabBarBackgroundColor="#1E293B"
+    BackgroundColor="#060A12"
+    FlyoutBackgroundColor="#0B1120"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarBackgroundColor="#0B1120"
+    Shell.TabBarForegroundColor="#38BDF8"
     Shell.TabBarTitleColor="#38BDF8"
-    Shell.TabBarUnselectedColor="#94A3B8">
+    Shell.TabBarUnselectedColor="#64748B">
 
     <TabBar AutomationId="Main_TabBar">
         <ShellContent
-            Title="{x:Static strings:AppStrings.Nav_Dashboard}"
+            Title="Workbench"
             AutomationId="Nav_DashboardTab"
             ContentTemplate="{DataTemplate views:DashboardPage}"
             Route="DashboardPage" />
         <ShellContent
-            Title="{x:Static strings:AppStrings.Nav_FloatingOverlay}"
+            Title="Overlay HUD"
             AutomationId="Nav_FloatingOverlayTab"
             ContentTemplate="{DataTemplate views:OverlayToolPage}"
             Route="OverlayToolPage" />
         <ShellContent
-            Title="{x:Static strings:AppStrings.Nav_NetworkProxy}"
+            Title="MITM Proxy"
             AutomationId="Nav_NetworkProxyTab"
             ContentTemplate="{DataTemplate views:NetworkProxyPage}"
             Route="NetworkProxyPage" />
         <ShellContent
-            Title="{x:Static strings:AppStrings.Nav_OrientationHelper}"
+            Title="Orientation"
             AutomationId="Nav_OrientationHelperTab"
             ContentTemplate="{DataTemplate views:OrientationToolPage}"
             Route="OrientationToolPage" />
         <ShellContent
-            Title="{x:Static strings:AppStrings.Nav_LogcatReader}"
+            Title="Logcat"
             AutomationId="Nav_LogcatReaderTab"
             ContentTemplate="{DataTemplate views:LogcatToolPage}"
             Route="LogcatToolPage" />
         <ShellContent
-            Title="{x:Static strings:AppStrings.Nav_DeviceInspector}"
+            Title="Inspector"
             AutomationId="Nav_DeviceInspectorTab"
             ContentTemplate="{DataTemplate views:DeviceInspectorPage}"
             Route="DeviceInspectorPage" />
         <ShellContent
-            Title="{x:Static strings:AppStrings.Nav_DeepLinkTester}"
+            Title="Deep-Links"
             AutomationId="Nav_DeepLinkTesterTab"
             ContentTemplate="{DataTemplate views:DeepLinkTesterPage}"
             Route="DeepLinkTesterPage" />

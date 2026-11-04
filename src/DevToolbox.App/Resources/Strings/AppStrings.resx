@@ -346,22 +346,46 @@
     <value>Recent Dispatch Execution Log</value>
   </data>
   <data name="QuickAction_HideOverlay" xml:space="preserve">
-    <value>Hide Overlay</value>
+    <value>Dismiss HUD</value>
+  </data>
+  <data name="QuickAction_CollapseGear" xml:space="preserve">
+    <value>Collapse to Gear</value>
+  </data>
+  <data name="QuickAction_ExpandFullApp" xml:space="preserve">
+    <value>Expand Full App</value>
   </data>
   <data name="QuickAction_ToggleProxy" xml:space="preserve">
     <value>Toggle Proxy</value>
   </data>
+  <data name="QuickAction_SimulateFault503" xml:space="preserve">
+    <value>Sim 503 Fault</value>
+  </data>
+  <data name="QuickAction_ClearTraffic" xml:space="preserve">
+    <value>Clear Traffic</value>
+  </data>
   <data name="QuickAction_ForcePortrait" xml:space="preserve">
-    <value>Force Portrait</value>
+    <value>Portrait 0°</value>
   </data>
   <data name="QuickAction_ForceLandscape" xml:space="preserve">
-    <value>Force Landscape</value>
+    <value>Landscape 90°</value>
   </data>
   <data name="QuickAction_CycleOrientation" xml:space="preserve">
-    <value>Cycle Orientation</value>
+    <value>Rotate 90°</value>
+  </data>
+  <data name="QuickAction_UnlockOrientation" xml:space="preserve">
+    <value>Auto Sensor</value>
   </data>
   <data name="QuickAction_EmitLogMarker" xml:space="preserve">
-    <value>Log QA Marker</value>
+    <value>QA Checkpoint</value>
+  </data>
+  <data name="QuickAction_ToggleLogStream" xml:space="preserve">
+    <value>Log Stream</value>
+  </data>
+  <data name="QuickAction_CaptureTelemetry" xml:space="preserve">
+    <value>Inspect Device</value>
+  </data>
+  <data name="QuickAction_FireTestDeepLink" xml:space="preserve">
+    <value>Fire Deep-Link</value>
   </data>
   <data name="Hud_FloatingTitle" xml:space="preserve">
     <value>DevToolbox HUD</value>

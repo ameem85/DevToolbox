@@ -9,335 +9,339 @@
     Title="{x:Static strings:AppStrings.Proxy_PageTitle}"
     x:DataType="vm:NetworkProxyViewModel"
     AutomationId="NetworkProxy_Page"
-    BackgroundColor="#0F172A">
+    BackgroundColor="#060A12"
+    Shell.NavBarIsVisible="False">
 
-    <ScrollView AutomationId="NetworkProxy_ScrollView">
-        <VerticalStackLayout
-            Padding="20, 16"
-            Spacing="16">
-
-            <Border
-                Padding="16, 14"
-                BackgroundColor="#1E293B"
-                Stroke="#334155"
-                StrokeShape="RoundRectangle 12">
-                <VerticalStackLayout Spacing="10">
-                    <Label
-                        AutomationId="NetworkProxy_ListenerSectionLabel"
-                        FontAttributes="Bold"
-                        FontSize="17"
-                        Text="{x:Static strings:AppStrings.Proxy_ListenerSectionTitle}"
-                        TextColor="#F8FAFC" />
-
-                    <Label
-                        AutomationId="NetworkProxy_StatusBannerLabel"
-                        FontAttributes="Bold"
-                        FontSize="13"
-                        Text="{Binding StatusBanner}"
-                        TextColor="#34D399" />
-
-                    <Label
-                        AutomationId="NetworkProxy_CertificateStatusLabel"
-                        FontSize="12"
-                        Text="{Binding CertificateStatusBanner}"
-                        TextColor="#38BDF8" />
-
-                    <HorizontalStackLayout Spacing="10">
+    <Grid RowDefinitions="Auto, *">
+        <!-- Studio Top Bar -->
+        <Border
+            Grid.Row="0"
+            Padding="16, 10"
+            BackgroundColor="#0B1120"
+            Stroke="#1E293B"
+            StrokeShape="RoundRectangle 0"
+            StrokeThickness="0,0,0,1">
+            <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
+                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                    <Border Padding="8, 4" BackgroundColor="#162033" Stroke="#34D399" StrokeShape="RoundRectangle 8">
+                        <Label FontAttributes="Bold" FontSize="13" Text="🌐" TextColor="#34D399" />
+                    </Border>
+                    <VerticalStackLayout Spacing="1" VerticalOptions="Center">
+                        <Label FontAttributes="Bold" FontSize="15" Text="MITM NETWORK PROXY &amp; MOCK ENGINE" TextColor="#F8FAFC" />
                         <Label
-                            AutomationId="NetworkProxy_PortLabel"
-                            FontSize="13"
-                            Text="{x:Static strings:AppStrings.Proxy_PortLabel}"
-                            TextColor="#E2E8F0"
-                            VerticalOptions="Center" />
-                        <Entry
-                            WidthRequest="96"
-                            AutomationId="NetworkProxy_PortEntry"
-                            BackgroundColor="#0F172A"
-                            Keyboard="Numeric"
-                            Text="{Binding ListenPortText}"
-                            TextColor="#F8FAFC" />
-                        <Button
-                            AutomationId="NetworkProxy_StartButton"
-                            BackgroundColor="#059669"
-                            Command="{Binding StartProxyCommand}"
-                            CornerRadius="8"
-                            Text="{x:Static strings:AppStrings.Proxy_StartButton}"
-                            TextColor="White" />
-                        <Button
-                            AutomationId="NetworkProxy_StopButton"
-                            BackgroundColor="#DC2626"
-                            Command="{Binding StopProxyCommand}"
-                            CornerRadius="8"
-                            Text="{x:Static strings:AppStrings.Proxy_StopButton}"
-                            TextColor="White" />
-                        <Button
-                            AutomationId="NetworkProxy_AdbReverseButton"
-                            BackgroundColor="#4F46E5"
-                            Command="{Binding BindAdbReverseTunnelCommand}"
-                            CornerRadius="8"
-                            Text="{x:Static strings:AppStrings.Proxy_AdbReverseButton}"
-                            TextColor="White" />
-                    </HorizontalStackLayout>
+                            AutomationId="NetworkProxy_StatusBannerLabel"
+                            FontFamily="monospace"
+                            FontSize="11"
+                            Text="{Binding StatusBanner}"
+                            TextColor="#34D399" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
 
-                    <HorizontalStackLayout Spacing="10">
-                        <Button
-                            AutomationId="NetworkProxy_ExportRootCaButton"
-                            BackgroundColor="#0284C7"
-                            Command="{Binding ExportRootCaCommand}"
-                            CornerRadius="8"
-                            Text="{x:Static strings:AppStrings.Proxy_ExportRootCaButton}"
-                            TextColor="White" />
-                        <Button
-                            AutomationId="NetworkProxy_PushRootCaAdbButton"
-                            BackgroundColor="#6D28D9"
-                            Command="{Binding PushRootCaViaAdbCommand}"
-                            CornerRadius="8"
-                            Text="{x:Static strings:AppStrings.Proxy_PushRootCaAdbButton}"
-                            TextColor="White" />
-                    </HorizontalStackLayout>
-                </VerticalStackLayout>
-            </Border>
+                <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+                    <Button
+                        AutomationId="NetworkProxy_StartButton"
+                        BackgroundColor="#059669"
+                        Command="{Binding StartProxyCommand}"
+                        Text="▶ Start Proxy"
+                        TextColor="White" />
+                    <Button
+                        AutomationId="NetworkProxy_StopButton"
+                        BackgroundColor="#7F1D1D"
+                        Command="{Binding StopProxyCommand}"
+                        Text="⏹ Stop"
+                        TextColor="#FCA5A5" />
+                    <Button
+                        AutomationId="NetworkProxy_AdbReverseButton"
+                        BackgroundColor="#4F46E5"
+                        Command="{Binding BindAdbReverseTunnelCommand}"
+                        Text="⇄ ADB Reverse :8888"
+                        TextColor="White" />
+                </HorizontalStackLayout>
+            </Grid>
+        </Border>
 
-            <Border
-                Padding="16, 14"
-                BackgroundColor="#1E293B"
-                Stroke="#334155"
-                StrokeShape="RoundRectangle 12">
-                <VerticalStackLayout Spacing="10">
-                    <Label
-                        AutomationId="NetworkProxy_SimulatorSectionLabel"
-                        FontAttributes="Bold"
-                        FontSize="16"
-                        Text="{x:Static strings:AppStrings.Proxy_TestSimulatorSectionTitle}"
-                        TextColor="#F8FAFC" />
+        <ScrollView Grid.Row="1" AutomationId="NetworkProxy_ScrollView">
+            <VerticalStackLayout Padding="16, 12" Spacing="12">
 
-                    <HorizontalStackLayout Spacing="10">
-                        <Button
-                            AutomationId="NetworkProxy_SimulateProfileButton"
-                            BackgroundColor="#0284C7"
-                            Command="{Binding SimulateProfileRequestCommand}"
-                            CornerRadius="8"
-                            Text="{x:Static strings:AppStrings.Proxy_SimulateProfileButton}"
-                            TextColor="White" />
-                        <Button
-                            AutomationId="NetworkProxy_SimulateCheckoutButton"
-                            BackgroundColor="#B91C1C"
-                            Command="{Binding SimulateCheckoutFaultCommand}"
-                            CornerRadius="8"
-                            Text="{x:Static strings:AppStrings.Proxy_SimulateCheckoutButton}"
-                            TextColor="White" />
-                        <Button
-                            AutomationId="NetworkProxy_SimulateCatalogButton"
-                            BackgroundColor="#D97706"
-                            Command="{Binding SimulateCatalogRewriteCommand}"
-                            CornerRadius="8"
-                            Text="{x:Static strings:AppStrings.Proxy_SimulateCatalogButton}"
-                            TextColor="White" />
-                    </HorizontalStackLayout>
-                </VerticalStackLayout>
-            </Border>
+                <!-- Listener & Certificate Authority Card -->
+                <Border Style="{StaticResource StudioCardBorder}">
+                    <VerticalStackLayout Spacing="8">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <Label
+                                AutomationId="NetworkProxy_ListenerSectionLabel"
+                                FontAttributes="Bold"
+                                FontSize="13"
+                                Text="HTTP/HTTPS TLS 1.3 INTERCEPTOR &amp; ROOT CA PROVISIONING"
+                                TextColor="#F8FAFC" />
+                            <Label
+                                Grid.Column="1"
+                                AutomationId="NetworkProxy_CertificateStatusLabel"
+                                FontFamily="monospace"
+                                FontSize="10.5"
+                                Text="{Binding CertificateStatusBanner}"
+                                TextColor="#38BDF8" />
+                        </Grid>
 
-            <Border
-                Padding="16, 14"
-                BackgroundColor="#1E293B"
-                Stroke="#334155"
-                StrokeShape="RoundRectangle 12">
-                <VerticalStackLayout Spacing="10">
-                    <Label
-                        AutomationId="NetworkProxy_AddRuleHeaderLabel"
-                        FontAttributes="Bold"
-                        FontSize="16"
-                        Text="{x:Static strings:AppStrings.Proxy_AddRuleSectionTitle}"
-                        TextColor="#F8FAFC" />
+                        <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto, Auto" ColumnSpacing="8">
+                            <Label
+                                Grid.Column="0"
+                                AutomationId="NetworkProxy_PortLabel"
+                                FontSize="12"
+                                Text="Port:"
+                                TextColor="#94A3B8"
+                                VerticalOptions="Center" />
+                            <Entry
+                                Grid.Column="1"
+                                WidthRequest="84"
+                                AutomationId="NetworkProxy_PortEntry"
+                                FontFamily="monospace"
+                                Keyboard="Numeric"
+                                Text="{Binding ListenPortText}" />
+                            <Button
+                                Grid.Column="3"
+                                AutomationId="NetworkProxy_ExportRootCaButton"
+                                BackgroundColor="#162033"
+                                BorderColor="#0284C7"
+                                BorderWidth="1"
+                                Command="{Binding ExportRootCaCommand}"
+                                Text="Export Root CA (.cer/.pem)"
+                                TextColor="#38BDF8" />
+                            <Button
+                                Grid.Column="4"
+                                AutomationId="NetworkProxy_PushRootCaAdbButton"
+                                BackgroundColor="#162033"
+                                BorderColor="#4F46E5"
+                                BorderWidth="1"
+                                Command="{Binding PushRootCaViaAdbCommand}"
+                                Text="Push CA via ADB"
+                                TextColor="#818CF8" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
 
-                    <Grid
-                        ColumnDefinitions="*, *, Auto, Auto"
-                        ColumnSpacing="10">
-                        <Entry
-                            Grid.Column="0"
-                            AutomationId="NetworkProxy_NewRuleNameEntry"
-                            BackgroundColor="#0F172A"
-                            Placeholder="{x:Static strings:AppStrings.Proxy_NewRuleNamePlaceholder}"
-                            PlaceholderColor="#64748B"
-                            Text="{Binding NewRuleName}"
-                            TextColor="#F8FAFC" />
-                        <Entry
-                            Grid.Column="1"
-                            AutomationId="NetworkProxy_NewRuleUrlEntry"
-                            BackgroundColor="#0F172A"
-                            Placeholder="{x:Static strings:AppStrings.Proxy_NewRuleUrlPlaceholder}"
-                            PlaceholderColor="#64748B"
-                            Text="{Binding NewRuleUrlPattern}"
-                            TextColor="#F8FAFC" />
-                        <Picker
-                            Grid.Column="2"
-                            WidthRequest="160"
-                            AutomationId="NetworkProxy_RuleTypePicker"
-                            BackgroundColor="#0F172A"
-                            ItemsSource="{Binding AvailableRuleTypes}"
-                            SelectedItem="{Binding SelectedRuleType}"
-                            TextColor="#F8FAFC" />
-                        <Button
-                            Grid.Column="3"
-                            AutomationId="NetworkProxy_AddRuleButton"
-                            BackgroundColor="#2563EB"
-                            Command="{Binding AddRuleCommand}"
-                            CornerRadius="8"
-                            Text="{x:Static strings:AppStrings.Proxy_AddRuleButton}"
-                            TextColor="White" />
-                    </Grid>
+                <!-- Traffic Simulator & Rule Creator Row -->
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
+                    <Border Grid.Column="0" Style="{StaticResource StudioCardBorder}">
+                        <VerticalStackLayout Spacing="8">
+                            <Label
+                                AutomationId="NetworkProxy_SimulatorSectionLabel"
+                                FontAttributes="Bold"
+                                FontSize="12.5"
+                                Text="TRAFFIC &amp; FAULT SIMULATOR"
+                                TextColor="#F8FAFC" />
+                            <HorizontalStackLayout Spacing="6">
+                                <Button
+                                    AutomationId="NetworkProxy_SimulateProfileButton"
+                                    BackgroundColor="#0284C7"
+                                    Command="{Binding SimulateProfileRequestCommand}"
+                                    Text="GET /profile (200)"
+                                    TextColor="White" />
+                                <Button
+                                    AutomationId="NetworkProxy_SimulateCheckoutButton"
+                                    BackgroundColor="#B91C1C"
+                                    Command="{Binding SimulateCheckoutFaultCommand}"
+                                    Text="POST /checkout (503)"
+                                    TextColor="White" />
+                                <Button
+                                    AutomationId="NetworkProxy_SimulateCatalogButton"
+                                    BackgroundColor="#D97706"
+                                    Command="{Binding SimulateCatalogRewriteCommand}"
+                                    Text="GET /catalog (Rewrite)"
+                                    TextColor="White" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
 
-                    <Entry
-                        AutomationId="NetworkProxy_NewRulePayloadEntry"
-                        BackgroundColor="#0F172A"
-                        Placeholder="{x:Static strings:AppStrings.Proxy_NewRulePayloadPlaceholder}"
-                        PlaceholderColor="#64748B"
-                        Text="{Binding NewRulePayload}"
-                        TextColor="#38BDF8" />
-                </VerticalStackLayout>
-            </Border>
-
-            <Label
-                AutomationId="NetworkProxy_RulesHeaderLabel"
-                FontAttributes="Bold"
-                FontSize="16"
-                Text="{x:Static strings:AppStrings.Proxy_RulesSectionTitle}"
-                TextColor="#E2E8F0" />
-
-            <CollectionView
-                AutomationId="NetworkProxy_RulesCollectionView"
-                ItemsSource="{Binding Rules}"
-                SelectionMode="None">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout
-                        ItemSpacing="8"
-                        Orientation="Vertical" />
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="vm:MockRuleItemViewModel">
-                        <Border
-                            Padding="14, 10"
-                            BackgroundColor="#1E293B"
-                            Stroke="#334155"
-                            StrokeShape="RoundRectangle 8">
-                            <Grid
-                                ColumnDefinitions="Auto, *, Auto"
-                                ColumnSpacing="12">
-                                <Switch
+                    <Border Grid.Column="1" Style="{StaticResource StudioCardBorder}">
+                        <VerticalStackLayout Spacing="8">
+                            <Label
+                                AutomationId="NetworkProxy_AddRuleHeaderLabel"
+                                FontAttributes="Bold"
+                                FontSize="12.5"
+                                Text="NEW MOCK / REWRITE / FAULT RULE"
+                                TextColor="#F8FAFC" />
+                            <Grid ColumnDefinitions="*, *, Auto, Auto" ColumnSpacing="6">
+                                <Entry
                                     Grid.Column="0"
-                                    AutomationId="NetworkProxy_RuleEnabledSwitch"
-                                    IsToggled="{Binding IsEnabled}"
-                                    OnColor="#34D399"
-                                    VerticalOptions="Center" />
-                                <VerticalStackLayout
+                                    AutomationId="NetworkProxy_NewRuleNameEntry"
+                                    Placeholder="Rule Name"
+                                    Text="{Binding NewRuleName}" />
+                                <Entry
                                     Grid.Column="1"
-                                    Spacing="2">
+                                    AutomationId="NetworkProxy_NewRuleUrlEntry"
+                                    FontFamily="monospace"
+                                    Placeholder="*/api/v1/orders*"
+                                    Text="{Binding NewRuleUrlPattern}" />
+                                <Picker
+                                    Grid.Column="2"
+                                    WidthRequest="130"
+                                    AutomationId="NetworkProxy_RuleTypePicker"
+                                    ItemsSource="{Binding AvailableRuleTypes}"
+                                    SelectedItem="{Binding SelectedRuleType}" />
+                                <Button
+                                    Grid.Column="3"
+                                    AutomationId="NetworkProxy_AddRuleButton"
+                                    BackgroundColor="#0284C7"
+                                    Command="{Binding AddRuleCommand}"
+                                    Text="+ Add"
+                                    TextColor="White" />
+                            </Grid>
+                            <Entry
+                                AutomationId="NetworkProxy_NewRulePayloadEntry"
+                                FontFamily="monospace"
+                                Placeholder="{x:Static strings:AppStrings.Proxy_NewRulePayloadPlaceholder}"
+                                Text="{Binding NewRulePayload}"
+                                TextColor="#38BDF8" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Active Rules List -->
+                <Label
+                    AutomationId="NetworkProxy_RulesHeaderLabel"
+                    FontAttributes="Bold"
+                    FontSize="12.5"
+                    Text="ACTIVE INTERCEPTION RULES"
+                    TextColor="#94A3B8" />
+
+                <CollectionView
+                    AutomationId="NetworkProxy_RulesCollectionView"
+                    ItemsSource="{Binding Rules}"
+                    SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout ItemSpacing="6" Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:MockRuleItemViewModel">
+                            <Border
+                                Padding="12, 8"
+                                BackgroundColor="#0F172A"
+                                Stroke="#1E293B"
+                                StrokeShape="RoundRectangle 8">
+                                <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="10">
+                                    <Switch
+                                        Grid.Column="0"
+                                        AutomationId="NetworkProxy_RuleEnabledSwitch"
+                                        IsToggled="{Binding IsEnabled}"
+                                        OnColor="#34D399"
+                                        VerticalOptions="Center" />
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                        <HorizontalStackLayout Spacing="8">
+                                            <Label
+                                                AutomationId="NetworkProxy_RuleNameLabel"
+                                                FontAttributes="Bold"
+                                                FontSize="13"
+                                                Text="{Binding Name}"
+                                                TextColor="#F8FAFC" />
+                                            <Label
+                                                AutomationId="NetworkProxy_RuleSummaryLabel"
+                                                FontFamily="monospace"
+                                                FontSize="11"
+                                                Text="{Binding Summary}"
+                                                TextColor="#38BDF8"
+                                                VerticalOptions="Center" />
+                                        </HorizontalStackLayout>
+                                        <Label
+                                            AutomationId="NetworkProxy_RulePayloadLabel"
+                                            FontFamily="monospace"
+                                            FontSize="10.5"
+                                            LineBreakMode="TailTruncation"
+                                            Text="{Binding PayloadPreview}"
+                                            TextColor="#94A3B8" />
+                                    </VerticalStackLayout>
+                                    <Button
+                                        Grid.Column="2"
+                                        AutomationId="NetworkProxy_DeleteRuleButton"
+                                        BackgroundColor="#7F1D1D"
+                                        Command="{Binding DeleteCommand}"
+                                        Text="Delete"
+                                        TextColor="#FCA5A5"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Captured Traffic Stream -->
+                <Grid ColumnDefinitions="*, Auto">
+                    <Label
+                        Grid.Column="0"
+                        AutomationId="NetworkProxy_TrafficHeaderLabel"
+                        FontAttributes="Bold"
+                        FontSize="12.5"
+                        Text="LIVE CAPTURED HTTP/HTTPS TRAFFIC (DIRECT IOC STREAM)"
+                        TextColor="#94A3B8"
+                        VerticalOptions="Center" />
+                    <Button
+                        Grid.Column="1"
+                        AutomationId="NetworkProxy_ClearTrafficButton"
+                        BackgroundColor="#162033"
+                        BorderColor="#2A3A54"
+                        BorderWidth="1"
+                        Command="{Binding ClearTrafficCommand}"
+                        Text="🧹 Clear Traffic"
+                        TextColor="#E2E8F0" />
+                </Grid>
+
+                <CollectionView
+                    AutomationId="NetworkProxy_TrafficCollectionView"
+                    ItemsSource="{Binding CapturedTraffic}"
+                    SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout ItemSpacing="6" Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="services:CapturedTrafficEntry">
+                            <Border
+                                Padding="12, 8"
+                                BackgroundColor="#070B14"
+                                Stroke="#1E293B"
+                                StrokeShape="RoundRectangle 8">
+                                <VerticalStackLayout Spacing="3">
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label
+                                            AutomationId="NetworkProxy_TrafficMethodLabel"
+                                            FontAttributes="Bold"
+                                            FontFamily="monospace"
+                                            FontSize="11.5"
+                                            Text="{Binding Method}"
+                                            TextColor="#38BDF8" />
+                                        <Label
+                                            AutomationId="NetworkProxy_TrafficStatusLabel"
+                                            FontAttributes="Bold"
+                                            FontFamily="monospace"
+                                            FontSize="11.5"
+                                            Text="{Binding StatusCode}"
+                                            TextColor="#34D399" />
+                                        <Label
+                                            AutomationId="NetworkProxy_TrafficUrlLabel"
+                                            FontFamily="monospace"
+                                            FontSize="11.5"
+                                            LineBreakMode="TailTruncation"
+                                            Text="{Binding Url}"
+                                            TextColor="#F8FAFC" />
+                                    </HorizontalStackLayout>
                                     <Label
-                                        AutomationId="NetworkProxy_RuleNameLabel"
-                                        FontAttributes="Bold"
-                                        FontSize="14"
-                                        Text="{Binding Name}"
-                                        TextColor="#F8FAFC" />
+                                        AutomationId="NetworkProxy_TrafficRuleMatchLabel"
+                                        FontFamily="monospace"
+                                        FontSize="10.5"
+                                        Text="{Binding MatchedRuleName}"
+                                        TextColor="#FBBF24" />
                                     <Label
-                                        AutomationId="NetworkProxy_RuleSummaryLabel"
-                                        FontSize="12"
-                                        Text="{Binding Summary}"
-                                        TextColor="#38BDF8" />
-                                    <Label
-                                        AutomationId="NetworkProxy_RulePayloadLabel"
-                                        FontSize="11"
+                                        AutomationId="NetworkProxy_TrafficResponsePreviewLabel"
+                                        FontFamily="monospace"
+                                        FontSize="10.5"
                                         LineBreakMode="TailTruncation"
-                                        Text="{Binding PayloadPreview}"
+                                        Text="{Binding ResponsePreview}"
                                         TextColor="#94A3B8" />
                                 </VerticalStackLayout>
-                                <Button
-                                    Grid.Column="2"
-                                    AutomationId="NetworkProxy_DeleteRuleButton"
-                                    BackgroundColor="#7F1D1D"
-                                    Command="{Binding DeleteCommand}"
-                                    CornerRadius="6"
-                                    Text="{x:Static strings:AppStrings.Proxy_DeleteRuleButton}"
-                                    TextColor="White"
-                                    VerticalOptions="Center" />
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-            <Grid ColumnDefinitions="*, Auto">
-                <Label
-                    Grid.Column="0"
-                    AutomationId="NetworkProxy_TrafficHeaderLabel"
-                    FontAttributes="Bold"
-                    FontSize="16"
-                    Text="{x:Static strings:AppStrings.Proxy_TrafficSectionTitle}"
-                    TextColor="#E2E8F0"
-                    VerticalOptions="Center" />
-                <Button
-                    Grid.Column="1"
-                    AutomationId="NetworkProxy_ClearTrafficButton"
-                    BackgroundColor="#334155"
-                    Command="{Binding ClearTrafficCommand}"
-                    CornerRadius="8"
-                    Text="{x:Static strings:AppStrings.Proxy_ClearTrafficButton}"
-                    TextColor="#E2E8F0" />
-            </Grid>
-
-            <CollectionView
-                AutomationId="NetworkProxy_TrafficCollectionView"
-                ItemsSource="{Binding CapturedTraffic}"
-                SelectionMode="None">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout
-                        ItemSpacing="8"
-                        Orientation="Vertical" />
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="services:CapturedTrafficEntry">
-                        <Border
-                            Padding="12, 10"
-                            BackgroundColor="#1E293B"
-                            Stroke="#334155"
-                            StrokeShape="RoundRectangle 8">
-                            <VerticalStackLayout Spacing="4">
-                                <HorizontalStackLayout Spacing="8">
-                                    <Label
-                                        AutomationId="NetworkProxy_TrafficMethodLabel"
-                                        FontAttributes="Bold"
-                                        FontSize="12"
-                                        Text="{Binding Method}"
-                                        TextColor="#38BDF8" />
-                                    <Label
-                                        AutomationId="NetworkProxy_TrafficStatusLabel"
-                                        FontAttributes="Bold"
-                                        FontSize="12"
-                                        Text="{Binding StatusCode}"
-                                        TextColor="#34D399" />
-                                    <Label
-                                        AutomationId="NetworkProxy_TrafficUrlLabel"
-                                        FontSize="12"
-                                        LineBreakMode="TailTruncation"
-                                        Text="{Binding Url}"
-                                        TextColor="#F8FAFC" />
-                                </HorizontalStackLayout>
-                                <Label
-                                    AutomationId="NetworkProxy_TrafficRuleMatchLabel"
-                                    FontSize="11"
-                                    Text="{Binding MatchedRuleName}"
-                                    TextColor="#FBBF24" />
-                                <Label
-                                    AutomationId="NetworkProxy_TrafficResponsePreviewLabel"
-                                    FontSize="11"
-                                    LineBreakMode="TailTruncation"
-                                    Text="{Binding ResponsePreview}"
-                                    TextColor="#94A3B8" />
-                            </VerticalStackLayout>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-        </VerticalStackLayout>
-    </ScrollView>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>
